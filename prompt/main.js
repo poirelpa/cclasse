@@ -4,6 +4,8 @@ var promptWindow;
 var promptOptions
 var promptAnswer;
 
+// adapted from https://www.scriptol.com/javascript/electron-prompt.php
+
 // Creating the dialog
 
 function promptModal(parent, options, callback) {
