@@ -9,8 +9,8 @@ function launchProgramBrowser(window,options,callback){
   let programBrowserWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    parent:data.select?window:null,
-    modal:!!data.select,
+    parent:options.select?window:null,
+    modal:!!options.select,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       enableRemoteModule:true
@@ -43,8 +43,8 @@ ipcMain.on("closeProgramBrowser", (event, data) => {
 
 // Called by the application to open the prompt dialog
 ipcMain.on("launchProgramBrowser",  (event, data) => {
-  options = data
-  launchProgramBrowser(BrowserWindow.fromWebContents(event.sender),data,
+  options = data || {}
+  launchProgramBrowser(BrowserWindow.fromWebContents(event.sender),options,
   function() {
     event.returnValue = selection
   })
