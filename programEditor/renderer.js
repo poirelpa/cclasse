@@ -125,9 +125,7 @@ function displayProgram(program){
   console.log(program)
   window.program = program
   $('#programName').val(program.name)
-  if(program.reference){
-    $('#programReference').val(program.reference).change()
-  }
+  $('#programReference').val(program.reference).change()
   let $programItems = $('#programItems').empty()
   let addItems = function(items,level){
     items.forEach((item, i) => {
@@ -225,7 +223,10 @@ $(function(){
   loadReferences()
   $reference = $('#reference')
   $('#programReference').on('change',function(){
-    loadReference(this.value)
+    if(this.value)
+      loadReference(this.value)
+    else
+      $('#reference').empty().hide()
   })
 
   $reference.on('click',e=>{
