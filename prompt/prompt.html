@@ -15,17 +15,17 @@
       if(event.key=="Escape") cancel()
     }
     function cancel() {
-      ipcRenderer.send("closeDialog", false)
+      ipcRenderer.send("closePrompt", false)
       this.close();
     }
 
     function response() {
-      ipcRenderer.send("closeDialog", document.getElementById("data").value)
+      ipcRenderer.send("closePrompt", document.getElementById("data").value)
       this.close();
     }
 
     window.onload=function() {
-      var options = ipcRenderer.sendSync("openDialog", "")
+      var options = ipcRenderer.sendSync("openPrompt", "")
       var params = JSON.parse(options)
       document.getElementById("label").innerHTML = params.label;
       document.getElementById("data").value = params.value;

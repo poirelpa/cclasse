@@ -56,7 +56,8 @@ const template = [
          click:window.launchClassEditor
        },
        {
-         label:'&Consultation de programmes'
+         label:'&Consultation de programmes',
+         click:window.launchProgramEditor
        },
        {
           type: 'separator'
@@ -283,11 +284,22 @@ function addProgrammationClick(){
   buildProgrammationsTable(window.class_  )
 }
 
+function selectCompetenceClick(){
+  if(!window.class_.program) return false
+  competence = window.selectCompetence({
+    select:'one',
+    program:window.class_.program
+  })
+  console.log(competence)
+  return false
+}
+
 $(function(){
   loadPrograms()
 
   $('#addPeriod').on('click',addPeriodClick)
   $('#addProgrammation').on('click',addProgrammationClick)
+  $('#selectCompetence').on('click',selectCompetenceClick)
 
   let path = "C:/Users/poirelp/AppData/Roaming/CClasse/storage/classes/toto.json"
     window.openClassFile(path).then(r=>{

@@ -3,6 +3,7 @@ const {app, BrowserWindow,Menu} = require('electron')
 const path = require('path')
 
 require('./prompt/main.js')
+require('./programBrowser/main.js')
 require('./programEditor/main.js')
 
 function createWindow () {

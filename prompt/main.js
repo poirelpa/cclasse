@@ -37,13 +37,13 @@ function promptModal(parent, options, callback) {
 
 // Called by the dialog box to get its parameters
 
-ipcMain.on("openDialog", (event, data) => {
+ipcMain.on("openPrompt", (event, data) => {
     event.returnValue = JSON.stringify(promptOptions, null, '')
 })
 
 // Called by the dialog box when closed
 
-ipcMain.on("closeDialog", (event, data) => {
+ipcMain.on("closePrompt", (event, data) => {
   promptAnswer = data
 })
 

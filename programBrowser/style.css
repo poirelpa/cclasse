@@ -1,0 +1,51 @@
+html, body {
+ margin: 0;
+ padding: 0;
+ }
+body {
+ font-family: Calibri, Verdana, sans-serif;
+ display: flex;
+}
+
+section#program{
+  display:none;
+  flex:1 1 500px;
+  padding:0 10px;
+  height:100vh;
+  overflow:scroll;
+}
+
+
+aside#reference{
+  display:none;
+  background-color: #eee;
+  flex: 1 1 300px;
+  height:100vh;
+  overflow:scroll;
+  padding:0 10px;
+}
+
+
+#programItems{
+  padding-left:0
+}
+#programItems li{
+  list-style-type:none;
+  display:flex
+}
+#programItems input.name{
+  flex:1;
+}
+#programItems input.color{
+  width:14px;
+  height:17px
+}
+
+#programItems a.link{
+  visibility: hidden;
+}
+#programItems .currentItem,#programItems .currentItem input{
+  background-color:#fed
+}
+
+.ui-effects-transfer { border: 2px dotted gray; }
