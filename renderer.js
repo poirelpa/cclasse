@@ -176,9 +176,52 @@ function displayClass(class_){
 }
 
 function buildProgrammationsTable(class_){
-  let headerRow = $('<tr><th>Programmations</th></tr>')
-  $('#programmations').empty()
-    .append(headerRow)
+  let $header = $('<tr><th>Programmations</th></tr>')
+  let $programmations = $('#programmations').empty()
+    .append($header)
+
+  let $programmationRows = {}
+  for (var p in class_.programmations) {
+    if (class_.programmations.hasOwnProperty(p)) {
+      $programmationRows[p]=$(`<tr><th>${p}</th></tr>`).appendTo($programmations)
+    }
+  }
+
+  let prevDay
+  let prevWeek
+  for (var d in class_.days) {
+    if (class_.days.hasOwnProperty(d)) {
+      //console.log()
+      let day = $.datepicker.parseDate("yy-mm-dd",d)
+      if(prevDay == null || day.getDay()<prevDay.getDay() || (day.getTime() - prevWeek.getTime() > 1000*60*60*24*6)){
+        let f = $.datepicker.formatDate('d/m',day)
+
+        $header.append(`<th>${f}</th>`)
+
+        let periodBreak = day.getTime() - prevWeek?.getTime() > 1000*60*60*24*13
+        if(periodBreak)
+          $th.addClass('periodBreak')
+
+        for (var name in class_.programmations) {
+          if (class_.programmations.hasOwnProperty(name)) {
+
+              let programmation = class_.programmations[name]
+              let $td = $('<td>').appendTo($programmationRows[name])
+              if(periodBreak)
+                $td.addClass('periodBreak')
+              if(programmation.progressions){
+                //todo
+              } else {
+                $('<a class="addProgression">+</a>').appendTo($td)
+              }
+          }
+        }
+        prevWeek = day
+      }
+      prevDay = day
+    }
+  }
+
 }
 
 function loadPrograms(){
@@ -230,10 +273,21 @@ function addPeriodClick(){
   buildProgrammationsTable()
 }
 
+function addProgrammationClick(){
+  let name = $('#programmationName').val()
+  if(!name) return
+  window.class_.programmations = window.class_.programmations || {}
+  if(window.class_.programmations.hasOwnProperty(name)) return
+
+  window.class_.programmations[name]={}
+  buildProgrammationsTable(window.class_  )
+}
+
 $(function(){
   loadPrograms()
 
   $('#addPeriod').on('click',addPeriodClick)
+  $('#addProgrammation').on('click',addProgrammationClick)
 
   let path = "C:/Users/poirelp/AppData/Roaming/CClasse/storage/classes/toto.json"
     window.openClassFile(path).then(r=>{
