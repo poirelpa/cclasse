@@ -36,7 +36,7 @@ aside#reference{
   width:300px
 }
 
-#programItems a{
+#programItems a.link{
   display:none;
 }
 #programItems .currentItem{

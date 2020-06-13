@@ -110,15 +110,11 @@ function updateProgram(){
     let level = $li.data('level')
     let item={
       name:$('input',$li).val(),
-      referenceXPath:$('a',$li).data('xpath'),
+      referenceXPath:$('a.link',$li).data('xpath'),
       items:[]
     }
     currentItemsByLevel[level].items.push(item)
     currentItemsByLevel[level+1] = item
-    return {
-      name:$('input',li).val(),
-      referenceXPath:$('a',li).data('xpath')
-    }
   })
   return window.program
 }
@@ -151,11 +147,11 @@ function addItem(item={}){
   item.name = item.name || ""
   item.referenceXPath = item.referenceXPath || ""
   item.level = item.level || 0
-  let $li = $(`<li><input value="${item.name}"/><a href="#"><span class="ui-icon ui-icon-link"></span></a></li>`)
+  let $li = $(`<li><input value="${item.name}"/><a class="link" href="#"><span class="ui-icon ui-icon-link"></span></a><a href="#" class="delete"><span class="ui-icon ui-icon-trash"></span></a></li>`)
     .appendTo('#programItems')
     .data('level',item.level || 0).css('margin-left',item.level*15)
   if(item.referenceXPath){
-    $('a', $li).data('xpath',item?.referenceXPath).css('display','inline')
+    $('a.link', $li).data('xpath',item?.referenceXPath).css('display','inline')
   }
   return $li
 }
@@ -231,12 +227,12 @@ $(function(){
   $reference.on('click',e=>{
     $currentITem = $('#programItems .currentItem')
     if(e.ctrlKey){
-      let $a = $('a',$currentITem)
+      let $a = $('a.link',$currentITem)
       let $input =$('input',$currentITem)
       if(!$a.data('xpath') || window.confirm('Ecraser le lien existant ?')){
         let xpath = getPathTo(e.target)
         let $i = $(document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null).iterateNext())
-        $('a',$currentITem).data('xpath',xpath).css('display','inline')
+        $a.data('xpath',xpath).css('display','inline')
         $i.effect('transfer',{ to: "#programItems .currentItem .ui-icon-link", className: "ui-effects-transfer" })
         console.log(textTruncate($i.text(),200).trim())
         if(!$input.val()) $input.val(textTruncate($i.text(),200).trim().replace(/\s+/mg,' ').replace(/^[–→·Ø-]\s*/,'').replace(/\s*[.;:]$/,''))
@@ -245,7 +241,7 @@ $(function(){
     }
   })
 
-  $('#programItems').on('click','a',function(){
+  $('#programItems').on('click','a.link',function(){
     let $i = $(document.evaluate($(this).data('xpath'), document, null, XPathResult.ANY_TYPE, null).iterateNext())
     $reference.stop(true,true).animate({
         'scrollTop': $i.position().top + $reference.scrollTop()-10
@@ -253,6 +249,12 @@ $(function(){
     $i.stop(true,true).effect('highlight',2000)
 
     return false
+  })
+  $('#programItems').on('click','a.delete',function(){
+    let $li = $(this).parent()
+
+    if((!$('input',$li).val() && !$('a.link',$li).data('xpath')) || window.confirm("Supprimer cet élément ?"))
+      $(this).parent().remove()
   })
 
   $('#programItems').on('mousedown','li',function(){
