@@ -33,6 +33,10 @@ aside#reference{
 #programItems input{
   width:300px
 }
+
+#programItems a{
+  display:none;
+}
 #programItems .currentItem{
   background-color:#fed
 }

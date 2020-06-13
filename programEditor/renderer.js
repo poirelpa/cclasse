@@ -96,20 +96,31 @@ function newProgram(menuItem, browserWindow, event){
 
 
 function updateProgram(){
-  let items=$('#programItems li').map((i, li) => {
-    return {
-      name:$('input',li).val(),
-      referenceXPath:$('a',li).data('xpath')
-    }
-    console.log(item)
-  }).get();
 
   Object.assign(window.program,{
     name:$('#programName').val(),
     reference:$('#programReference').val(),
-    items:items
   })
-  console.log(window.program)
+
+  window.program.items=[]
+  let currentItemsByLevel=[window.program]
+  let currentLevel = 0
+  $('#programItems li').each((i, li) => {
+    let $li = $(li)
+    let level = $li.data('level')
+    let item={
+      name:$('input',$li).val(),
+      referenceXPath:$('a',$li).data('xpath'),
+      items:[]
+    }
+    currentItemsByLevel[level].items.push(item)
+    currentItemsByLevel[level+1] = item
+    return {
+      name:$('input',li).val(),
+      referenceXPath:$('a',li).data('xpath')
+    }
+  })
+  return window.program
 }
 
 function displayProgram(program){
@@ -120,9 +131,14 @@ function displayProgram(program){
     $('#programReference').val(program.reference).change()
   }
   let $programItems = $('#programItems').empty()
-  window.program.items.forEach((item, i) => {
-    addItem(item)
-  });
+  let addItems = function(items,level){
+    items.forEach((item, i) => {
+      item.level=level
+      addItem(item)
+      addItems(item.items, level+1)
+    });
+  }
+  addItems(window.program.items, 0)
   if(!window.program.items.length){
     addItem()
   }
@@ -134,11 +150,13 @@ function displayProgram(program){
 function addItem(item={}){
   item.name = item.name || ""
   item.referenceXPath = item.referenceXPath || ""
-  item.level = item.level || ""
-  let $li = $(`<li><input value="${item?.name}"/><span class="ui-icon ui-icon-link"></span><a href="#"></a></li>`)
+  item.level = item.level || 0
+  let $li = $(`<li><input value="${item.name}"/><a href="#"><span class="ui-icon ui-icon-link"></span></a></li>`)
     .appendTo('#programItems')
-    .data('level',item?.level)
-  $('a', $li).data('xpath',item?.referenceXPath)
+    .data('level',item.level || 0).css('margin-left',item.level*15)
+  if(item.referenceXPath){
+    $('a', $li).data('xpath',item?.referenceXPath).css('display','inline')
+  }
   return $li
 }
 
@@ -174,11 +192,6 @@ $('#importReference').on('click',e=>{
 function loadReference(fileName){
   $reference.load(window.getReferencesPath()+'/'+fileName,function(){
     $reference.show()
-    $('#programItems a').each((i,item)=>{
-      let $item = $(item)
-      let $i = $(document.evaluate($item.data('xpath'), document, null, XPathResult.ANY_TYPE, null).iterateNext())
-      $item.text(textTruncate($i.text(),30))
-    })
   })
 }
 
@@ -221,7 +234,7 @@ $(function(){
       let xpath = getPathTo(e.target)
       let $i = $(document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null).iterateNext())
       $i.effect('transfer',{ to: "#programItems .currentItem .ui-icon-link", className: "ui-effects-transfer" })
-      $('a',$currentITem).data('xpath',xpath).text(textTruncate($i.text(),30))
+      $('a',$currentITem).data('xpath',xpath).css('display','inline')
       $('input',$currentITem).val(textTruncate($i.text(),80)).select()
     }
     $('input',$currentITem).focus()
@@ -229,10 +242,10 @@ $(function(){
 
   $('#programItems').on('click','a',function(){
     let $i = $(document.evaluate($(this).data('xpath'), document, null, XPathResult.ANY_TYPE, null).iterateNext())
-    $reference.animate({
+    $reference.stop(true,true).animate({
         'scrollTop': $i.position().top + $reference.scrollTop()
     }, 400, 'swing')
-    $i.effect('highlight',2000)
+    $i.stop(true,true).effect('highlight',2000)
 
     return false
   })
@@ -247,8 +260,9 @@ $(function(){
 
     let $li
     if(e.key=="Enter"){
-      let level = ($(this).parent().data('level') || 0)
-      $li = addItem({level:level})
+      let $prev=$(this).parent()
+      let level = ($prev.data('level') || 0)+1
+      $li = addItem({level:level}).insertAfter($prev)
       $li.data('level',level).css('margin-left',level*15)
     } else if(e.key=="ArrowUp"){
       $li = $(this).parent().prev()
@@ -258,14 +272,12 @@ $(function(){
       $li=$(this).parent()
       let level = Math.max(0, ($li.data('level') || 0)-1)
       $li.data('level',level).css('margin-left',level*15)
-      console.log($li.data('level'))
     } else if(e.key=="Tab"){
       $li=$(this).parent()
-      let level = ($li.data('level') || 0)+ 1
+      $prev = $li.prev()
+      let level = Math.min($prev.data('level')+1,($li.data('level') || 0)+ 1)
       $li.data('level',level).css('margin-left',level*15)
-      console.log($li.data('level'))
     } else {
-      console.log(e.key)
       return true
     }
     if($li.length){
