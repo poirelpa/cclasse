@@ -1,0 +1,31 @@
+html, body {
+ margin: 0;
+ padding: 0;
+ }
+body {
+ font-family: Calibri, Verdana, sans-serif;
+ display: flex;
+}
+
+section#program{
+  display:none;
+  flex:1 1 500px;
+}
+
+
+aside#reference{
+  display:none;
+  background-color: #eee;
+  flex: 1 1 300px;
+  height:100vh;
+  overflow:scroll;
+}
+
+#programItems input{
+  width:300px
+}
+#programItems .currentItem{
+  background-color:#fed
+}
+
+.ui-effects-transfer { border: 2px dotted gray; }
