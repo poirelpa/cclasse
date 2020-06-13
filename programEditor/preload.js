@@ -68,3 +68,11 @@ window.extractPath = function(filePath){
 window.prompt = function(title,msg,val){
   return ipcRenderer.sendSync("prompt", {title:title,message:msg,value:val})
 }
+
+window.confirm = function(msg){
+  return remote.dialog.showMessageBoxSync({
+    type:"question",
+    buttons:["Annuler","Valider"],
+    message:msg
+  })
+}

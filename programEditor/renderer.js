@@ -233,7 +233,7 @@ $(function(){
     if(e.ctrlKey){
       let $a = $('a',$currentITem)
       let $input =$('input',$currentITem)
-      if(!$a.data('xpath') || confirm('Ecraser le lien existant ?')){
+      if(!$a.data('xpath') || window.confirm('Ecraser le lien existant ?')){
         let xpath = getPathTo(e.target)
         let $i = $(document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null).iterateNext())
         $('a',$currentITem).data('xpath',xpath).css('display','inline')
