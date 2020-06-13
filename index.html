@@ -10,14 +10,56 @@
     <title>CClasse</title>
   </head>
   <body>
-    <section id="tabs-container">
-      <div id="tabs">
-        <ul></ul>
-      </div>
+    <section id="class">
+      <form>
+        <br>
+        <label for="className">Classe</label>
+        <input id="className">
+        <br>
+        <br>
+        <label for="classProgram">Programme</label>
+        <select id="classProgram"></select>
+        <br>
+        <br>
+        <table id="programmations">
+        </table>
+        <label for="periodStart">Ajouter une période : du </label>
+        <input type="date" id="periodStart">
+        <label for="periodEnd"> au </label>
+        <input type="date" id="periodEnd">
+        <span class="dayCheckBox">
+          <label for="periodMonday">L</label>
+          <input type="checkbox" id="periodMonday" checked>
+        </span>
+        <span class="dayCheckBox">
+          <label for="periodTuesday">M</label>
+          <input type="checkbox" id="periodTuesday" checked>
+        </span>
+        <span class="dayCheckBox">
+          <label for="periodWednesday">M</label>
+          <input type="checkbox" id="periodWednesday">
+        </span>
+        <span class="dayCheckBox">
+          <label for="periodThursday">J</label>
+          <input type="checkbox" id="periodThursday" checked>
+        </span>
+        <span class="dayCheckBox">
+          <label for="periodFriday">V</label>
+          <input type="checkbox" id="periodFriday" checked>
+        </span>
+        <span class="dayCheckBox">
+          <label for="periodSaturday">S</label>
+          <input type="checkbox" id="periodSaturday">
+        </span>
+        <span class="dayCheckBox">
+          <label for="periodSunday">D</label>
+          <input type="checkbox" id="periodSunday">
+        </span>
+        <a href="#" id="addPeriod"><span class="ui-icon ui-icon-plus">Ajouter une période</span></a>
+      </form>
     </section>
     <script src="./node_modules/jquery-ui-dist/external/jquery/jquery.js"></script>
     <script src="./node_modules/jquery-ui-dist/jquery-ui.min.js"></script>
-    <script src="./datepicker-fr.js"></script>
     <script src="./renderer.js"></script>
   </body>
 </html>

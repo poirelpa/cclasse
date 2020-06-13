@@ -4,66 +4,20 @@ html, body {
  }
 body {
  font-family: Calibri, Verdana, sans-serif;
- display: -webkit-flex;     /* NEW - Chrome */
- display: flex;             /* NEW, Spec - Opera 12.1, Firefox 20+ */
+ display: flex;
 }
 
-#main{
+section#class{
   flex:5 1 500px;
+  display:none;
+  padding:0 10px
 }
 
-nav{
-  float:left;
-  background-color: #eee;
-  -webkit-flex: 1;          /* Chrome */
-  flex: 1 0 250px;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+.dayCheckBox{
+    display:inline-block;
 }
 
-aside#program{
-  float:right;
-  background-color: #eee;
-  -webkit-flex: 1;          /* Chrome */
-  flex: 1 0 250px;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-  max-width:400px;
-}
-
-.description{
-  font-size:90%;
-  text-align: justify;
-  max-height: 200px;
-  overflow-y: auto;
-}
-.description br{
-  content: "";
-  margin: 2em;
-  display: block;
-  font-size: 24%;
-}
-
-li.ui-tabs-tab button{
-  padding:0;
-  border-color:transparent;
-  background-color:transparent;
-}
-
-#main-tabs .ui-tabs-anchor{
-    padding: 3px 2px 3px 6px;
-    font-size: 90%;
-}
-#main-tabs .ui-tabs-anchor.changed{
-    font-weight: bold;
-}
-
-table.agenda{
-  margin-top:5px;
-  border-collapse: collapse;
-}
-th, table.agenda td{
-  border:thin solid black;
-  font-size:90%;
-  font-weight: normal;
-  min-width:30px;
-}
-table.agenda .rentree{
-  border-left:thick solid black;
+.dayCheckBox label{
+  display:block;
+  text-align: center;
 }

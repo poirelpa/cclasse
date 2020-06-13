@@ -1,23 +1,45 @@
 const {remote, ipcRenderer} = require('electron')
-
+const fs = require('fs').promises
+const path = require('path')
 require('./preloadTools.js')
 
 
-/*
-const { Menu, MenuItem } = remote
-const menu = new Menu()
-menu.append(new MenuItem({ label: 'MenuItem1', click() { console.log('item 1 clicked') } }))
-menu.append(new MenuItem({ type: 'separator' }))
-menu.append(new MenuItem({ label: 'MenuItem2', type: 'checkbox', checked: true }))
 
-window.addEventListener('contextmenu', (e) => {
-  e.preventDefault()
-  menu.popup({ window: remote.getCurrentWindow() })
-}, false)
+const classesPath = path.join(remote.app.getPath("userData"),'storage','classes')
+const classesExtension = [{name:'JSON',extensions:['json']}]
+const programsPath = path.join(remote.app.getPath("userData"),'storage','programmes')
+const programsExtension = [{name:'JSON',extensions:['json']}]
 
-*/
+
 
 window.launchProgramEditor = function(){
-
     return ipcRenderer.send("launchProgramEditor")
+}
+
+window.getOpenClassPath = function(){
+  let options={
+    defaultPath :classesPath,
+    filters: classesExtension,
+    properties: ['openFile']
+  }
+  return remote.dialog.showOpenDialog(options)
+}
+
+window.getSaveClassPath = function(className){
+  let options={
+    defaultPath: path.join(classesPath,className),
+    filters: classesExtension
+  }
+  return remote.dialog.showSaveDialog(options)
+}
+
+window.openClassFile = function(filePath){
+  return fs.readFile(filePath)
+}
+window.saveClassFile = function(class_, filePath){
+  return fs.writeFile(filePath, JSON.stringify(class_,null,2))
+}
+
+window.getProgramsFilesList = function(){
+  return fs.readdir(programsPath)
 }
