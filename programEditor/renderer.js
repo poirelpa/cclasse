@@ -109,7 +109,8 @@ function updateProgram(){
     let $li = $(li)
     let level = $li.data('level')
     let item={
-      name:$('input',$li).val(),
+      name:$('input.name',$li).val(),
+      color:$('input.color',$li).val(),
       referenceXPath:$('a.link',$li).data('xpath'),
       items:[]
     }
@@ -147,7 +148,8 @@ function addItem(item={}){
   item.name = item.name || ""
   item.referenceXPath = item.referenceXPath || ""
   item.level = item.level || 0
-  let $li = $(`<li><input value="${item.name}"/><a class="link" href="#"><span class="ui-icon ui-icon-link"></span></a><a href="#" class="zoom"><span class="ui-icon ui-icon-zoomout"></span></a><a href="#" class="delete"><span class="ui-icon ui-icon-trash"></span></a></li>`)
+  item.color = item.color || "#ffffff"
+  let $li = $(`<li><input class="name"value="${item.name}"/><input class="color" type="color" value="${item.color}"><a class="link" href="#"><span class="ui-icon ui-icon-link"></span></a><a href="#" class="zoom"><span class="ui-icon ui-icon-zoomout"></span></a><a href="#" class="delete"><span class="ui-icon ui-icon-trash"></span></a></li>`)
     .appendTo('#programItems')
     .data('level',item.level || 0).css('margin-left',item.level*15)
   if(item.referenceXPath){
@@ -228,7 +230,7 @@ $(function(){
     $currentITem = $('#programItems .currentItem')
     if(e.ctrlKey){
       let $a = $('a.link',$currentITem)
-      let $input =$('input',$currentITem)
+      let $input =$('input.name',$currentITem)
       if(!$a.data('xpath') || window.confirm('Ecraser le lien existant ?')){
         let xpath = getPathTo(e.target)
         let $i = $(document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null).iterateNext())
@@ -275,7 +277,7 @@ $(function(){
       return false
     }
 
-    if((!$('input',$li).val() && !$('a.link',$li).data('xpath')) || window.confirm("Supprimer cet élément ?"))
+    if((!$('input.name',$li).val() && !$('a.link',$li).data('xpath')) || window.confirm("Supprimer cet élément ?"))
       $(this).parent().remove()
     return false
   })
@@ -284,9 +286,21 @@ $(function(){
     let $li = $(this)
     $('.currentItem').removeClass('currentItem')
     $li.addClass('currentItem')
-    $('input',$li).focus()
+    $('input.name',$li).focus()
   })
-  $('#programItems').on('keydown','input',function(e){
+  $('#programItems').on('change','input.color',function(e){
+    if(!confirm('Appliquer aux enfants ?')) return false
+    let $li = $(this).parent()
+    let minLevel = $li.data('level')
+
+    $li = $li.next()
+    while($li.length && $li.data('level')>minLevel){
+      $('input.color',$li).val(this.value)
+      $li = $li.next()
+    }
+    return false
+  })
+  $('#programItems').on('keydown','input.name',function(e){
 
     let $li
     if(e.key=="Enter"){
@@ -294,6 +308,7 @@ $(function(){
       let level = ($prev.data('level') || 0)
       $li = addItem({level:level}).insertAfter($prev)
       $li.data('level',level).css('margin-left',level*15)
+      $('input.color',$li).val($('input.color',$prev).val())
     } else if(e.key=="ArrowUp"){
       $li = $(this).parent().prev()
     } else if(e.key=="ArrowDown"){
@@ -313,7 +328,7 @@ $(function(){
     if($li.length){
       $('.currentItem').removeClass('currentItem')
       $li.addClass('currentItem')
-      $('input',$li).focus()
+      $('input.name',$li).focus()
     }
 
     return false
