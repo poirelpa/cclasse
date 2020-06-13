@@ -1,14 +1,27 @@
 
 const template = [
   {
-    label: '&Outils',
-    submenu: [
+    role:'fileMenu',
+    submenu:[
       {
-        label:'&Editeur de programmes',
-        click:window.launchProgramEditor
+        label:'&Nouvelle classe',
+        //click:newProgram,
+        accelerator:'CommandOrControl+N'
       },
       {
-        role:'&Consultation de programmes'
+        label:'&Ouvrir',
+        //click:openProgram,
+        accelerator:'CommandOrControl+O'
+      },
+      {
+        label:'&Enregistrer',
+        //click:saveProgram,
+        accelerator:'CommandOrControl+S'
+      },
+      {
+        label:'&Enregistrer sous',
+        //click:saveProgramAs,
+        accelerator:'CommandOrControl+Shift+S'
       }
     ]
   },
@@ -35,7 +48,24 @@ const template = [
          }
       ]
    },
-
+   {
+     label: '&Outils',
+     submenu: [
+       {
+         label:'&Editeur de programmes',
+         click:window.launchProgramEditor
+       },
+       {
+         label:'&Consultation de programmes'
+       },
+       {
+          type: 'separator'
+       },
+       {
+         label:'Editeur de &séquence'
+       },
+     ]
+   },
    {
       label: 'View',
       submenu: [
@@ -74,15 +104,6 @@ const template = [
          },
          {
             role: 'close'
-         }
-      ]
-   },
-
-   {
-      role: 'help',
-      submenu: [
-         {
-            label: 'Learn More'
          }
       ]
    }
