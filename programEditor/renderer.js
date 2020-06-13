@@ -131,10 +131,14 @@ function displayProgram(program){
   $('#program').show()
 }
 
-function addItem(item={name:'',referenceXPath:''}){
-  let $li = $(`<li><input value="${item.name}"/><span class="ui-icon ui-icon-link"></span><a href="#"></a></li>`)
+function addItem(item={}){
+  item.name = item.name || ""
+  item.referenceXPath = item.referenceXPath || ""
+  item.level = item.level || ""
+  let $li = $(`<li><input value="${item?.name}"/><span class="ui-icon ui-icon-link"></span><a href="#"></a></li>`)
     .appendTo('#programItems')
-  $('a', $li).data('xpath',item.referenceXPath)
+    .data('level',item?.level)
+  $('a', $li).data('xpath',item?.referenceXPath)
   return $li
 }
 
@@ -233,11 +237,19 @@ $(function(){
     return false
   })
 
+  $('#programItems').on('mousedown','li',function(){
+    let $li = $(this)
+    $('.currentItem').removeClass('currentItem')
+    $li.addClass('currentItem')
+    $('input',$li).focus()
+  })
   $('#programItems').on('keydown','input',function(e){
 
     let $li
     if(e.key=="Enter"){
-      $li = addItem()
+      let level = ($(this).parent().data('level') || 0)
+      $li = addItem({level:level})
+      $li.data('level',level).css('margin-left',level*15)
     } else if(e.key=="ArrowUp"){
       $li = $(this).parent().prev()
     } else if(e.key=="ArrowDown"){
