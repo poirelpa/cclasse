@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "jquery-ui-dist": "^1.12.1",
-    "node-json2html": "^1.4.0"
+    "node-json2html": "^1.4.0",
+    "uuid": "^8.1.0"
   }
 }

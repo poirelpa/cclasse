@@ -31,9 +31,10 @@ aside#reference{
 }
 #programItems li{
   list-style-type:none;
+  display:flex
 }
-#programItems input.text{
-  width:300px
+#programItems input.name{
+  flex:1;
 }
 #programItems input.color{
   width:14px;
@@ -41,9 +42,9 @@ aside#reference{
 }
 
 #programItems a.link{
-  display:none;
+  visibility: hidden;
 }
-#programItems .currentItem{
+#programItems .currentItem,#programItems .currentItem input{
   background-color:#fed
 }
 

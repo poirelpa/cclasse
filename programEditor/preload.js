@@ -1,4 +1,5 @@
 const { remote, ipcRenderer } = require("electron");
+const { v4: uuid } = require('uuid');
 const fs = require('fs').promises
 const path = require('path')
 
@@ -36,7 +37,7 @@ window.openProgramFile = function(filePath){
   return fs.readFile(filePath)
 }
 window.saveProgramFile = function(program, filePath){
-  return fs.writeFile(filePath, JSON.stringify(program))
+  return fs.writeFile(filePath, JSON.stringify(program,null,2))
 }
 
 window.getImportReferencePath = function(){
@@ -82,4 +83,8 @@ window.alert = function(msg){
     buttons:["vu ✓"],
     message:msg
   })
+}
+
+window.uuid = function(){
+  return uuid()
 }

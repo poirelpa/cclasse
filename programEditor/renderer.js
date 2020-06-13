@@ -112,6 +112,7 @@ function updateProgram(){
       name:$('input.name',$li).val(),
       color:$('input.color',$li).val(),
       referenceXPath:$('a.link',$li).data('xpath'),
+      uuid:$li.data('uuid')||uuid(),
       items:[]
     }
     currentItemsByLevel[level].items.push(item)
@@ -152,8 +153,9 @@ function addItem(item={}){
   let $li = $(`<li><input class="name"value="${item.name}"/><input class="color" type="color" value="${item.color}"><a class="link" href="#"><span class="ui-icon ui-icon-link"></span></a><a href="#" class="zoom"><span class="ui-icon ui-icon-zoomout"></span></a><a href="#" class="delete"><span class="ui-icon ui-icon-trash"></span></a></li>`)
     .appendTo('#programItems')
     .data('level',item.level || 0).css('margin-left',item.level*15)
+    .data('uuid',item.uuid)
   if(item.referenceXPath){
-    $('a.link', $li).data('xpath',item?.referenceXPath).css('display','inline')
+    $('a.link', $li).data('xpath',item?.referenceXPath).css('visibility','visible')
   }
   return $li
 }
@@ -234,7 +236,7 @@ $(function(){
       if(!$a.data('xpath') || window.confirm('Ecraser le lien existant ?')){
         let xpath = getPathTo(e.target)
         let $i = $(document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null).iterateNext())
-        $a.data('xpath',xpath).css('display','inline')
+        $a.data('xpath',xpath).css('visibility','visible')
         $i.effect('transfer',{ to: "#programItems .currentItem .ui-icon-link", className: "ui-effects-transfer" })
         console.log(textTruncate($i.text(),200).trim())
         if(!$input.val()) $input.val(textTruncate($i.text(),200).trim().replace(/\s+/mg,' ').replace(/^[–→·Ø-]\s*/,'').replace(/\s*[.;:]$/,''))
