@@ -231,19 +231,24 @@ $(function(){
   $reference.on('click',e=>{
     $currentITem = $('#programItems .currentItem')
     if(e.ctrlKey){
-      let xpath = getPathTo(e.target)
-      let $i = $(document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null).iterateNext())
-      $i.effect('transfer',{ to: "#programItems .currentItem .ui-icon-link", className: "ui-effects-transfer" })
-      $('a',$currentITem).data('xpath',xpath).css('display','inline')
-      $('input',$currentITem).val(textTruncate($i.text(),80)).select()
+      let $a = $('a',$currentITem)
+      let $input =$('input',$currentITem)
+      if(!$a.data('xpath') || confirm('Ecraser le lien existant ?')){
+        let xpath = getPathTo(e.target)
+        let $i = $(document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null).iterateNext())
+        $('a',$currentITem).data('xpath',xpath).css('display','inline')
+        $i.effect('transfer',{ to: "#programItems .currentItem .ui-icon-link", className: "ui-effects-transfer" })
+        console.log(textTruncate($i.text(),200).trim())
+        if(!$input.val()) $input.val(textTruncate($i.text(),200).trim().replace(/\s+/mg,' ').replace(/^[–→·Ø-]\s*/,'').replace(/\s*[.;:]$/,''))
+      }
+      $input.focus().select()
     }
-    $('input',$currentITem).focus()
   })
 
   $('#programItems').on('click','a',function(){
     let $i = $(document.evaluate($(this).data('xpath'), document, null, XPathResult.ANY_TYPE, null).iterateNext())
     $reference.stop(true,true).animate({
-        'scrollTop': $i.position().top + $reference.scrollTop()
+        'scrollTop': $i.position().top + $reference.scrollTop()-10
     }, 400, 'swing')
     $i.stop(true,true).effect('highlight',2000)
 
@@ -261,7 +266,7 @@ $(function(){
     let $li
     if(e.key=="Enter"){
       let $prev=$(this).parent()
-      let level = ($prev.data('level') || 0)+1
+      let level = ($prev.data('level') || 0)
       $li = addItem({level:level}).insertAfter($prev)
       $li.data('level',level).css('margin-left',level*15)
     } else if(e.key=="ArrowUp"){
