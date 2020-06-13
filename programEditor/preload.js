@@ -70,9 +70,16 @@ window.prompt = function(title,msg,val){
 }
 
 window.confirm = function(msg){
-  return remote.dialog.showMessageBoxSync({
+  return remote.dialog.showMessageBoxSync(remote.getCurrentWindow(),{
     type:"question",
     buttons:["Annuler","Valider"],
+    message:msg
+  })
+}
+window.alert = function(msg){
+  return remote.dialog.showMessageBoxSync(remote.getCurrentWindow(),{
+    type:"info",
+    buttons:["vu ✓"],
     message:msg
   })
 }

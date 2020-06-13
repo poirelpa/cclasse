@@ -147,7 +147,7 @@ function addItem(item={}){
   item.name = item.name || ""
   item.referenceXPath = item.referenceXPath || ""
   item.level = item.level || 0
-  let $li = $(`<li><input value="${item.name}"/><a class="link" href="#"><span class="ui-icon ui-icon-link"></span></a><a href="#" class="delete"><span class="ui-icon ui-icon-trash"></span></a></li>`)
+  let $li = $(`<li><input value="${item.name}"/><a class="link" href="#"><span class="ui-icon ui-icon-link"></span></a><a href="#" class="zoom"><span class="ui-icon ui-icon-zoomout"></span></a><a href="#" class="delete"><span class="ui-icon ui-icon-trash"></span></a></li>`)
     .appendTo('#programItems')
     .data('level',item.level || 0).css('margin-left',item.level*15)
   if(item.referenceXPath){
@@ -250,11 +250,34 @@ $(function(){
 
     return false
   })
+  $('#programItems').on('click','a.zoom',function(){
+    let $li = $(this).parent()
+    let minLevel = $li.data('level')
+    let show=-1
+
+    $('a.zoom .ui-icon', $li).toggleClass('ui-icon-zoomin ui-icon-zoomout')
+    $li = $li.next()
+    while($li.length && $li.data('level')>minLevel){
+      if(show==-1) show=($li.css('display')=='none')
+      show ? $li.show() : $li.hide()
+      $li = $li.next()
+    }
+    return false
+  })
   $('#programItems').on('click','a.delete',function(){
     let $li = $(this).parent()
+    if(!$li.siblings().length){
+      window.alert("impossible de supprimer la seule competence")
+      return false
+    }
+    if($li.next().data('level')>$li.data('level')){
+      window.alert("impossible de supprimer une competence ayant des enfants")
+      return false
+    }
 
     if((!$('input',$li).val() && !$('a.link',$li).data('xpath')) || window.confirm("Supprimer cet élément ?"))
       $(this).parent().remove()
+    return false
   })
 
   $('#programItems').on('mousedown','li',function(){
