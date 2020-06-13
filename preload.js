@@ -1,4 +1,9 @@
 const {remote, ipcRenderer} = require('electron')
+
+require('./preloadTools.js')
+
+
+/*
 const { Menu, MenuItem } = remote
 const menu = new Menu()
 menu.append(new MenuItem({ label: 'MenuItem1', click() { console.log('item 1 clicked') } }))
@@ -10,8 +15,9 @@ window.addEventListener('contextmenu', (e) => {
   menu.popup({ window: remote.getCurrentWindow() })
 }, false)
 
+*/
 
+window.launchProgramEditor = function(){
 
-window.prompt = function(title,msg,val){
-  return ipcRenderer.sendSync("prompt", {title:title,message:msg,value:val})
+    return ipcRenderer.send("launchProgramEditor")
 }

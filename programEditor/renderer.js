@@ -335,12 +335,4 @@ $(function(){
 
     return false
   })
-
-
-  var path='C:/Users/poirelp/AppData/Roaming/CClasse/storage/programmes/tata.json'
-  window.openProgramFile(path).then(r=>{
-    var p = Program.fromJSON(JSON.parse(r))
-    p.filePath = path
-    displayProgram(p)
-  })
 })
