@@ -14,10 +14,10 @@ function launchProgramEditor(){
     }
   })
   // and load the index.html of the app.
-  programEditorWindow.loadFile('programEditor/index.html')
+  programEditorWindow.loadFile(path.join(__dirname, 'index.html'))
 
 
-   programEditorWindow.webContents.openDevTools()
+   // programEditorWindow.webContents.openDevTools()
 }
 
 
