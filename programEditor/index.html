@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="../node_modules/jquery-ui-dist/jquery-ui.min.css">
+    <title>CClasse - Editeur de programme</title>
+  </head>
+  <body>
+    <section id="program">
+      <form>
+        <label for="programName">Programme</label>
+        <input id="programName">
+        <br>
+        <label for="programReference">Reference</label>
+        <select id="programReference"></select>
+        <button id="importReference" type="button">Importer une référence</button>
+        <br>
+        <label for="programReference">Arborescence des compétences</label>
+        <ul id="programItems">
+        </ul>
+      </form>
+    </section>
+    <aside id="reference">
+      <div>toto</div>
+    </aside>
+    <script src="../node_modules/jquery-ui-dist/external/jquery/jquery.js"></script>
+    <script src="../node_modules/jquery-ui-dist/jquery-ui.min.js"></script>
+    <script src="../datepicker-fr.js"></script>
+    <script src="./renderer.js"></script>
+  </body>
+</html>
