@@ -193,13 +193,14 @@ function buildProgrammationsTable(){
     let currentRow = row
     if(progGroup.programmations?.length){
       progGroup.programmations.forEach((prog, j) => {
-        $programmationRows[row]=$(`<tr><th class="prog"><span class="editable progName">${prog.name}</span><span class="addProgItem ui-icon ui-icon-note"></span><span class="deleteProg ui-icon ui-icon-trash"></span></th></tr>`)
+        $programmationRows[row]=$(`<tr><th class="prog"><span class="editable progName">${prog.name}</span><span class="addProgItem"></span><span class="deleteProg ui-icon ui-icon-trash"></span></th></tr>`)
           .css('background-color',prog.color)
           .data('uuid',prog.uuid)
           .data('xpath',prog.xpath)
           .data('progGroupIndex',i)
           .data('progIndex',j)
           .appendTo($programmations)
+          $('.prog .addProgItem',$programmationRows[row]).data('item',{uuid:prog.uuid,program:prog.program})
         row++
       });
     }
@@ -213,7 +214,7 @@ function buildProgrammationsTable(){
       row++
     }
     $programmationRows[currentRow].prepend(
-      $(`<th class="progGroup"><span class="editable progGroupName">${progGroup.name}</span><span class="addProg ui-icon ui-icon-plus"></span><span class="addProgItem ui-icon ui-icon-note"></span><span class="deleteProg ui-icon ui-icon-trash"></span></th>`)
+      $(`<th class="progGroup"><span class="editable progGroupName">${progGroup.name}</span><span class="addProg ui-icon ui-icon-plus"></span><span class="addProgItem"></span><span class="deleteProg ui-icon ui-icon-trash"></span></th>`)
       .css('background-color',progGroup.color)
       .data('uuid',progGroup.uuid)
       .data('xpath',progGroup.xpath)
@@ -222,6 +223,8 @@ function buildProgrammationsTable(){
       .attr('rowspan',Math.max(progGroup.programmations?.length,1))
       .appendTo($programmations)
     )
+    $('.progGroup .addProgItem',$programmationRows[row]).data('item',{uuid:progGroup.uuid,program:progGroup.program})
+
   })
 
   let prevDay
@@ -267,6 +270,8 @@ function buildProgrammationsTable(){
 
 
   $('.editable',$programmations).editable()
+  $('.prog .addProgItem',$programmations).programItemSelector(getProgramItemSelectorOptions).on('programItemSelected',addProgItem)
+  $('.progGroup .addProgItem',$programmations).programItemSelector(getProgramItemSelectorOptions).on('programItemSelected',addProgGroupItem)
   programmationsEditModeChange()
 }
 
@@ -335,16 +340,12 @@ function addProgrammationClick(){
   buildProgrammationsTable()
 }
 
-function selectProgramItemClick(){
-  if(!window.class_.program) return false
-  competence = window.selectProgramItem({
-    select:'1',
-    program:window.class_.program
-  })
-  if(competence){
-    $('#programmationName').val(competence.name)
-    $('#programmationColor').val(competence.color)
-    $(this).data('uuid',competence.uuid).data('referenceXPath',competence.referenceXPath)
+function programItemSelected(i,item){
+  if(item){
+    console.log(item)
+    $('#programmationName').val(item.name)
+    $('#programmationColor').val(item.color)
+    $(this).data('uuid',item.uuid).data('referenceXPath',item.referenceXPath)
   }
 }
 
@@ -368,12 +369,10 @@ function progNameChange(e){
   let progIndex = $(this).parents('tr').data('progIndex')
   let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
   window.class_.programmations[progGroupIndex].programmations[progIndex].name = this.innerText
-  console.log(class_.programmations)
 }
 function progGroupNameChange(){
     let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
     class_.programmations[progGroupIndex].name = this.innerText
-    console.log(class_.programmations)
 }
 
 function programmationsEditModeChange(){
@@ -399,29 +398,16 @@ function addProgItem(){
   let $tr = $(this).parents('tr')
   let progIndex = $tr.data('progIndex')
   let progGroupIndex = $tr.data('progGroupIndex')
-
-  if(!window.class_.program) return false
-  item = window.selectProgramItem({
-    select:'1',
-    program:window.class_.program,
-    item:window.class_.programmations[progGroupIndex].programmations[progIndex].uuid
-  })
   if(item){
     Object.assign(window.class_.programmations[progGroupIndex].programmations[progIndex], item)
     buildProgrammationsTable()
   }
 }
-function addProgGroupItem(){
+function addProgGroupItem(e,item){
   let $tr = $(this).parents('tr')
   let progGroupIndex = $tr.data('progGroupIndex')
-
-  if(!window.class_.program) return false
-  item = window.selectProgramItem({
-    select:'1',
-    program:window.class_.program,
-    item:window.class_.programmations[progGroupIndex].uuid
-  })
   if(item){
+    console.log(item)
     Object.assign(window.class_.programmations[progGroupIndex], item)
     buildProgrammationsTable()
   }
@@ -437,12 +423,16 @@ function emptyCellClicked(){
   console.log(data)
 }
 
+function getProgramItemSelectorOptions(){
+  return {program:window.class_.program}
+}
+
 $(function(){
   loadPrograms()
 
   $('#addPeriod').on('click',addPeriodClick)
   $('#addProgrammation').on('click',addProgrammationClick)
-  $('#selectProgramItem').on('click',selectProgramItemClick)
+  $('#selectProgramItem').programItemSelector(getProgramItemSelectorOptions).on('programItemSelected',programItemSelected)
   $('#classProgram').on('change',classProgramChange)
   $('#programmationsEditMode').on('change',programmationsEditModeChange)
 
@@ -452,9 +442,8 @@ $(function(){
     .on('editableChange','.progGroupName',progGroupNameChange)
     .on('click','.prog .deleteProg',deleteProgClick)
     .on('click','.progGroup .deleteProg',deleteProgGroupClick)
-    .on('click','.prog .addProgItem',addProgItem)
-    .on('click','.progGroup .addProgItem',addProgGroupItem)
     .on('click','td.empty',emptyCellClicked)
+
 
   let path = "C:/Users/poirelp/AppData/Roaming/CClasse/storage/classes/toto.json"
     window.openClassFile(path).then(r=>{

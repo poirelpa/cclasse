@@ -28,13 +28,18 @@ window.loadMenu(template)
 function openProgram(menuItem, browserWindow, event){
   window.getOpenProgramPath().then(r => {
     let path = r.filePaths?.[0]
-    if(path){
-      window.openProgramFile(path).then(p=>{
-          p.filePath = path
-          displayProgram(p)
-      })
-    }
+    loadProgramFile(path)
   })
+}
+
+function loadProgramFile(path){
+  if(path){
+    window.openProgramFile(path).then(p=>{
+        p.filePath = path
+        p.fileName = window.extractPath(path).base
+        displayProgram(p)
+    })
+  }
 }
 
 function displayProgram(program){
@@ -85,7 +90,7 @@ function addItem(item={}){
   if(item.referenceXPath){
     $('a.link', $li).css('visibility','visible')
   }
-  if(item.uuid == options.item){
+  if(item.uuid == options.uuid){
     $li.addClass('highlight')
   }
   if(!options.select){
@@ -135,7 +140,9 @@ function selectClick(){
     name:$('.name',$li).text(),
     uuid:$li.data('uuid'),
     color:$li.data('color'),
-    referenceXPath:$li.data('xpath')
+    referenceXPath:$li.data('xpath'),
+    program:window.program.fileName,
+    reference:window.program.reference
   }
   window.closeWindow(selection)
 }
@@ -145,7 +152,7 @@ var options
 $(function(){
   options = window.getOptions()
   if(options.program){
-    let program = window.openProgramFile(window.getProgramsPath()+'/'+options.program).then(displayProgram)
+    loadProgramFile(window.getProgramsPath()+'/'+options.program)
   }
 
 

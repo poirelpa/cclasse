@@ -31,7 +31,7 @@ function promptModal(parent, options, callback) {
   promptWindow.loadFile(path.join(__dirname, "prompt.html"))
 
 
-   promptWindow.webContents.openDevTools()
+  //promptWindow.webContents.openDevTools()
 }
 
 // Called by the dialog box to get its parameters

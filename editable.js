@@ -26,5 +26,6 @@
           $(this).nextAll('.ui-icon-close').trigger('click')
         }
       })
+      return this
   }
 })(jQuery)
