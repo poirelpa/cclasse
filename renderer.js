@@ -337,7 +337,7 @@ function addProgrammationClick(){
 function selectProgramItemClick(){
   if(!window.class_.program) return false
   competence = window.selectProgramItem({
-    select:'one',
+    select:'1',
     program:window.class_.program
   })
   if(competence){
@@ -345,7 +345,6 @@ function selectProgramItemClick(){
     $('#programmationColor').val(competence.color)
     $(this).data('uuid',competence.uuid).data('referenceXPath',competence.referenceXPath)
   }
-  return false
 }
 
 function classProgramChange(){
@@ -396,13 +395,35 @@ function deleteProgGroupClick(){
   buildProgrammationsTable()
 }
 function addProgItem(){
-  let progIndex = $(this).parents('tr').data('progIndex')
-  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
-  throw "not implemented"
+  let $tr = $(this).parents('tr')
+  let progIndex = $tr.data('progIndex')
+  let progGroupIndex = $tr.data('progGroupIndex')
+
+  if(!window.class_.program) return false
+  item = window.selectProgramItem({
+    select:'1',
+    program:window.class_.program,
+    item:window.class_.programmations[progGroupIndex].programmations[progIndex].uuid
+  })
+  if(item){
+    Object.assign(window.class_.programmations[progGroupIndex].programmations[progIndex], item)
+    buildProgrammationsTable()
+  }
 }
 function addProgGroupItem(){
-  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
-  throw "not implemented"
+  let $tr = $(this).parents('tr')
+  let progGroupIndex = $tr.data('progGroupIndex')
+
+  if(!window.class_.program) return false
+  item = window.selectProgramItem({
+    select:'1',
+    program:window.class_.program,
+    item:window.class_.programmations[progGroupIndex].uuid
+  })
+  if(item){
+    Object.assign(window.class_.programmations[progGroupIndex], item)
+    buildProgrammationsTable()
+  }
 }
 
 
@@ -429,6 +450,5 @@ $(function(){
         var c = JSON.parse(r)
         c.filePath = path
         displayClass(c)
-        $('#programmationsEditMode').click()
     })
 })

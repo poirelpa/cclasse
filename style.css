@@ -44,7 +44,3 @@ input[type=color]{
 #programmations .periodBreak{
   border-left-width: 3px
 }
-
-#programmations .ui-icon, #programmationsEdit{
-  display:none
-}

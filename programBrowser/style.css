@@ -41,3 +41,8 @@ aside#reference{
 #programItems a.link{
   visibility: hidden;
 }
+
+
+#programItems li.highlight   {
+  font-weight:bold
+}
