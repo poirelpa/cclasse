@@ -16,6 +16,7 @@ function launchProgramBrowser(window,options,callback){
       enableRemoteModule:true
     }
   })
+  selection = null
 
   programBrowserWindow.on('closed', () => {
       programBrowserWindow = null

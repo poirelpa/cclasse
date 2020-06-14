@@ -21,3 +21,7 @@ section#class{
   display:block;
   text-align: center;
 }
+input[type=color]{
+  width:14px;
+  height:17px
+}

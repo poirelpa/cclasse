@@ -290,6 +290,11 @@ function selectCompetenceClick(){
     select:'one',
     program:window.class_.program
   })
+  if(competence){
+    $('#programmationName').val(competence.name)
+    $('#programmationColor').val(competence.color)
+    $(this).data('uuid',competence.uuid).data('referenceXPath',competence.referenceXPath)
+  }
   console.log(competence)
   return false
 }

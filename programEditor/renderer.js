@@ -57,8 +57,7 @@ function openProgram(menuItem, browserWindow, event){
   window.getOpenProgramPath().then(r => {
     let path = r.filePaths?.[0]
     if(path){
-      window.openProgramFile(path).then(r=>{
-          var p = Program.fromJSON(JSON.parse(r))
+      window.openProgramFile(path).then(p=>{
           p.filePath = path
           displayProgram(p)
       })

@@ -28,7 +28,7 @@ window.getSaveProgramPath = function(programName){
 }
 
 window.openProgramFile = function(filePath){
-  return fs.readFile(filePath)
+  return fs.readFile(filePath).then(d=>JSON.parse(d))
 }
 window.saveProgramFile = function(program, filePath){
   return fs.writeFile(filePath, JSON.stringify(program,null,2))

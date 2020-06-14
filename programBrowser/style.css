@@ -31,21 +31,13 @@ aside#reference{
 }
 #programItems li{
   list-style-type:none;
-  display:flex
+  display:flex;
+  margin-bottom:3px
 }
-#programItems input.name{
-  flex:1;
-}
-#programItems input.color{
-  width:14px;
-  height:17px
+#programItems li .name{
+  flex:1
 }
 
 #programItems a.link{
   visibility: hidden;
 }
-#programItems .currentItem,#programItems .currentItem input{
-  background-color:#fed
-}
-
-.ui-effects-transfer { border: 2px dotted gray; }
