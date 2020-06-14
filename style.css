@@ -7,6 +7,10 @@ body {
  display: flex;
 }
 
+.ui-icon{
+  cursor: pointer;
+}
+
 section#class{
   flex:5 1 500px;
   display:none;
@@ -28,10 +32,19 @@ input[type=color]{
 
 #programmations{
   border-collapse: collapse;
+    border: 3px solid #888
 }
 #programmations td, #programmations th{
   border:1px solid #888
 }
+#programmations th{
+  font-weight: normal;
+  min-width:40px
+}
 #programmations .periodBreak{
-  border-left-width: 4px
+  border-left-width: 3px
+}
+
+#programmations .ui-icon, #programmationsEdit{
+  display:none
 }

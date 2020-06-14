@@ -34,3 +34,10 @@ window.alert = function(msg){
 window.uuid = function(){
   return uuid()
 }
+
+
+
+window.selectProgramItem = function(options){
+  options.select = options.select || 1
+  return ipcRenderer.sendSync("launchProgramBrowser",options)
+}

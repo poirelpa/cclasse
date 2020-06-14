@@ -192,13 +192,14 @@ function buildProgrammationsTable(){
   let row = 0
   class_.programmations.forEach((progGroup, i) => {
     let currentRow = row
-    if(progGroup.programmations){
+    if(progGroup.programmations?.length){
       progGroup.programmations.forEach((prog, j) => {
-        $programmationRows[row]=$(`<tr><th><span class="editable progName">${prog.name}</span></th></tr>`)
+        $programmationRows[row]=$(`<tr><th class="prog"><span class="editable progName">${prog.name}</span><span class="addProgItem ui-icon ui-icon-note"></span><span class="deleteProg ui-icon ui-icon-trash"></span></th></tr>`)
           .css('background-color',prog.color)
           .data('uuid',prog.uuid)
           .data('xpath',prog.xpath)
           .data('progGroupIndex',i)
+          .data('progIndex',j)
           .appendTo($programmations)
         row++
       });
@@ -213,13 +214,13 @@ function buildProgrammationsTable(){
       row++
     }
     $programmationRows[currentRow].prepend(
-      $(`<th class="progGroup"><span class="editable progGroupName">${progGroup.name}</span><a href="#" class="addProg"><span class="ui-icon ui-icon-plus"></span></th>`)
+      $(`<th class="progGroup"><span class="editable progGroupName">${progGroup.name}</span><span class="addProg ui-icon ui-icon-plus"></span><span class="addProgItem ui-icon ui-icon-note"></span><span class="deleteProg ui-icon ui-icon-trash"></span></th>`)
       .css('background-color',progGroup.color)
       .data('uuid',progGroup.uuid)
       .data('xpath',progGroup.xpath)
       .data('progGroupIndex',i)
       .attr('colspan',progGroup.programmations?.length ? 1 : 2)
-      .attr('rowspan',progGroup.programmations?.length)
+      .attr('rowspan',Math.max(progGroup.programmations?.length,1))
       .appendTo($programmations)
     )
   })
@@ -234,14 +235,14 @@ function buildProgrammationsTable(){
 
         let $th = $(`<th>${f}</th>`).appendTo($header)
 
-        let periodBreak = day.getTime() - prevWeek?.getTime() > 1000*60*60*24*13
+        let periodBreak = !prevWeek || day.getTime() - prevWeek?.getTime() > 1000*60*60*24*13
         if(periodBreak)
           $th.addClass('periodBreak')
 
 
           row = 0
           class_.programmations.forEach((progGroup, i) => {
-            if(progGroup.programmations){
+            if(progGroup.programmations?.length){
               progGroup.programmations.forEach((prog, j) => {
                 let $td = $('<td>').appendTo($programmationRows[row])
                 if(periodBreak)
@@ -264,33 +265,8 @@ function buildProgrammationsTable(){
   }
 
 
-  $('.editable',$programmations)
-    .append('<a href="#" class="ui-icon ui-icon-pencil">')
-    .on('click','.ui-icon-pencil',function(){
-      let $editable = $(this).parent()
-      let children = $editable.children()
-      let text = $editable.text()
-      $editable.data('oldText', text)
-      $editable.empty().append(`<input value="${text}"/><a href="#" class="ui-icon ui-icon-check"></a><a href="#" class="ui-icon ui-icon-close"></a>`)
-      $('input',$editable).focus().select()
-    })
-    .on('click','.ui-icon-close',function(){
-        let $editable = $(this).parent()
-        $editable.text($editable.data('oldText')).append('<a href="#" class="ui-icon ui-icon-pencil">')
-    })
-    .on('click','.ui-icon-check',function(){
-        let $editable = $(this).parent()
-        $editable.text($('input',$editable).val())
-          .append('<a href="#" class="ui-icon ui-icon-pencil">')
-          .trigger('change')
-    })
-    .on('keydown','input',function(e){
-      if(e.key=='Enter'){
-        $(this).nextAll('.ui-icon-check').trigger('click')
-      } else if(e.key=='Escape'){
-        $(this).nextAll('.ui-icon-close').trigger('click')
-      }
-    })
+  $('.editable',$programmations).editable()
+  programmationsEditModeChange()
 }
 
 function loadPrograms(){
@@ -358,9 +334,9 @@ function addProgrammationClick(){
   buildProgrammationsTable()
 }
 
-function selectCompetenceClick(){
+function selectProgramItemClick(){
   if(!window.class_.program) return false
-  competence = window.selectCompetence({
+  competence = window.selectProgramItem({
     select:'one',
     program:window.class_.program
   })
@@ -388,23 +364,71 @@ function addSubProgrammationClick(){
   buildProgrammationsTable()
 }
 
-function editableEditClick(){
-  let $span = $(this).prev()
+function progNameChange(e){
+  let progIndex = $(this).parents('tr').data('progIndex')
+  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
+  window.class_.programmations[progGroupIndex].programmations[progIndex].name = this.innerText
+  console.log(class_.programmations)
 }
+function progGroupNameChange(){
+    let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
+    class_.programmations[progGroupIndex].name = this.innerText
+    console.log(class_.programmations)
+}
+
+function programmationsEditModeChange(){
+  let show = $('#programmationsEditMode').get(0).checked
+  $('span.ui-icon','#programmations').css('display',show?'inline-block':'none')
+  $('#programmationsEdit').css('display',show?'block':'none')
+}
+
+function deleteProgClick(){
+  if(!confirm("Supprimer cette programmation ?"))return
+  let progIndex = $(this).parents('tr').data('progIndex')
+  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
+  window.class_.programmations[progGroupIndex].programmations.splice(progIndex,1)
+  buildProgrammationsTable()
+}
+function deleteProgGroupClick(){
+  if(!confirm("Supprimer cette programmation ?"))return
+  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
+  window.class_.programmations.splice(progGroupIndex,1)
+  buildProgrammationsTable()
+}
+function addProgItem(){
+  let progIndex = $(this).parents('tr').data('progIndex')
+  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
+  throw "not implemented"
+}
+function addProgGroupItem(){
+  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
+  throw "not implemented"
+}
+
 
 $(function(){
   loadPrograms()
 
   $('#addPeriod').on('click',addPeriodClick)
   $('#addProgrammation').on('click',addProgrammationClick)
-  $('#selectProgramItem').on('click',selectCompetenceClick)
+  $('#selectProgramItem').on('click',selectProgramItemClick)
   $('#classProgram').on('change',classProgramChange)
-  $('#programmations').on('click','.progGroup a.addProg',addSubProgrammationClick)
+  $('#programmationsEditMode').on('change',programmationsEditModeChange)
+
+  $('#programmations')
+    .on('click','.progGroup .addProg',addSubProgrammationClick)
+    .on('editableChange','.progName',progNameChange)
+    .on('editableChange','.progGroupName',progGroupNameChange)
+    .on('click','.prog .deleteProg',deleteProgClick)
+    .on('click','.progGroup .deleteProg',deleteProgGroupClick)
+    .on('click','.prog .addProgItem',addProgItem)
+    .on('click','.progGroup .addProgItem',addProgGroupItem)
 
   let path = "C:/Users/poirelp/AppData/Roaming/CClasse/storage/classes/toto.json"
     window.openClassFile(path).then(r=>{
         var c = JSON.parse(r)
         c.filePath = path
         displayClass(c)
+        $('#programmationsEditMode').click()
     })
 })

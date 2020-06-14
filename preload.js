@@ -20,10 +20,6 @@ window.launchProgramEditor = function(){
     return ipcRenderer.send("launchProgramBrowser")
 }
 
-window.selectCompetence = function(options){
-  return ipcRenderer.sendSync("launchProgramBrowser",options)
-}
-
 window.getOpenClassPath = function(){
   let options={
     defaultPath :classesPath,
