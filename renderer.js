@@ -53,11 +53,11 @@ const template = [
      submenu: [
        {
          label:'&Editeur de programmes',
-         click:window.launchClassEditor
+         click:window.launchProgramEditor
        },
        {
          label:'&Consultation de programmes',
-         click:window.launchProgramEditor
+         click:window.launchProgramBrowser
        },
        {
           type: 'separator'

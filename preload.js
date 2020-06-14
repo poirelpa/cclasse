@@ -16,7 +16,7 @@ window.launchProgramEditor = function(){
     return ipcRenderer.send("launchProgramEditor")
 }
 
-window.launchProgramEditor = function(){
+window.launchProgramBrowser = function(){
     return ipcRenderer.send("launchProgramBrowser")
 }
 
