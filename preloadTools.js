@@ -16,6 +16,10 @@ window.prompt = function(title,msg,val){
   return ipcRenderer.sendSync("prompt", {title:title,message:msg,value:val})
 }
 
+window.promptForm = function(form){
+  return ipcRenderer.sendSync("prompt", {form:form})
+}
+
 window.confirm = function(msg){
   return remote.dialog.showMessageBoxSync(remote.getCurrentWindow(),{
     type:"question",

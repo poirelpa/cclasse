@@ -4,34 +4,48 @@
     <p>
       <input type = "text" id="data" value="" onkeydown="pressed(event)">
       <input type = "button" id="ok" value="Valider" onclick="response()">
-      <input type = "button" value="Cancel" onclick="cancel()">
+      <input type = "button" value="Annuler" onclick="cancel()">
     </p>
 
     <script>
-    const { ipcRenderer } = require("electron")
 
     function pressed(event){
-      if(event.key=="Enter") response()
-      if(event.key=="Escape") cancel()
+      if(event.key=="Enter") window.response()
+      if(event.key=="Escape") window.cancel()
     }
     function cancel() {
-      ipcRenderer.send("closePrompt", false)
-      this.close();
+      window.closeWindow(false)
     }
 
     function response() {
-      ipcRenderer.send("closePrompt", document.getElementById("data").value)
-      this.close();
+      window.closeWindow(document.getElementById("data").value)
     }
 
     window.onload=function() {
-      var options = ipcRenderer.sendSync("openPrompt", "")
-      var params = JSON.parse(options)
-      document.getElementById("label").innerHTML = params.label;
-      document.getElementById("data").value = params.value;
-      document.getElementById("data").focus()
-      document.getElementById("data").select()
+      var options = window.getOptions()
+      console.log(options)
+      if(options.form){
+          document.body.innerHTML=options.form
+
+          document.forms[0].onsubmit = function(){
+            closeWindow($(this).serializeArray())
+            return false
+          }
+      }
+      else{
+        document.getElementById("label").innerHTML = options.message||'?';
+        document.getElementById("data").value = options.value||'';
+        document.getElementById("data").focus()
+        document.getElementById("data").select()
+      }
+      let oldw=window.outerWidth
+      let oldh=window.outerHeight
+      let neww=Math.min(document.body.scrollWidth + 30,800)
+      let newh=Math.min(document.body.scrollHeight + 50,600)
+      window.resizeTo(neww,newh)
+      window.moveBy(-(neww-oldw)/2,-(newh-oldh)/2)
     }
     </script>
     <link rel="stylesheet" href="./style.css">
+    <script src="../node_modules/jquery-ui-dist/external/jquery/jquery.js"></script>
   </body>

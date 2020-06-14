@@ -5,12 +5,12 @@ var options
 var selection;
 
 function launchProgramBrowser(window,options,callback){
-  console.log()
   let programBrowserWindow = new BrowserWindow({
     width: 800,
     height: 600,
     parent:options.select?window:null,
     modal:!!options.select,
+    alwaysOnTop : true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       enableRemoteModule:true

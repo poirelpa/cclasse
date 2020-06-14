@@ -227,6 +227,12 @@ function buildProgrammationsTable(){
 
   let prevDay
   let prevWeek
+  let addCell=function(row,periodBreak,prog, day){
+    let $td = $('<td class="empty">').appendTo($programmationRows[row])
+      .data('day',d)
+    if(periodBreak)
+      $td.addClass('periodBreak')
+  }
   for (var d in class_.days) {
     if (class_.days.hasOwnProperty(d)) {
       let day = $.datepicker.parseDate("yymmdd",d)
@@ -244,15 +250,11 @@ function buildProgrammationsTable(){
           class_.programmations.forEach((progGroup, i) => {
             if(progGroup.programmations?.length){
               progGroup.programmations.forEach((prog, j) => {
-                let $td = $('<td>').appendTo($programmationRows[row])
-                if(periodBreak)
-                  $td.addClass('periodBreak')
+                addCell(row, periodBreak, prog, day)
                 row ++
               });
             }else{
-              let $td = $('<td>').appendTo($programmationRows[row])
-              if(periodBreak)
-                $td.addClass('periodBreak')
+              addCell(row, periodBreak, progGroup, day)
               row ++
             }
 
@@ -426,6 +428,15 @@ function addProgGroupItem(){
   }
 }
 
+function emptyCellClicked(){
+  let $td = $(this)
+  let $tr = $td.parent()
+  let day = $td.data('day')
+  let progIndex = $tr.data('progIndex')
+  let progGroupIndex = $tr.data('progGroupIndex')
+  let data = window.promptForm('<form><input name="toto"/><input name="tata"/></form>')
+  console.log(data)
+}
 
 $(function(){
   loadPrograms()
@@ -444,6 +455,7 @@ $(function(){
     .on('click','.progGroup .deleteProg',deleteProgGroupClick)
     .on('click','.prog .addProgItem',addProgItem)
     .on('click','.progGroup .addProgItem',addProgGroupItem)
+    .on('click','td.empty',emptyCellClicked)
 
   let path = "C:/Users/poirelp/AppData/Roaming/CClasse/storage/classes/toto.json"
     window.openClassFile(path).then(r=>{
