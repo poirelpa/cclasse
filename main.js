@@ -2,28 +2,11 @@
 const {app, BrowserWindow,Menu} = require('electron')
 const path = require('path')
 
+const {createWindow} = require('./classEditor/main.js')
 require('./prompt/main.js')
 require('./programBrowser/main.js')
 require('./programEditor/main.js')
 
-function createWindow () {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      //nodeIntegration: true
-      preload: path.join(__dirname, 'preload.js'),
-      enableRemoteModule:true
-    }
-  })
-
-  // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
-
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools()
-}
 
 app.allowRendererProcessReuse = false
 
@@ -31,7 +14,6 @@ app.allowRendererProcessReuse = false
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-
   createWindow()
 
   app.on('activate', function () {

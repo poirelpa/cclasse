@@ -178,7 +178,6 @@ function displayClass(class_){
 
 function buildProgrammationsTable(){
   let class_ = window.class_
-  console.log(window.class_.programmations)
   let $header = $('<tr><th colspan="2">Programmations</th></tr>')
   let $programmations = $('#programmations').empty()
     .append($header)
@@ -434,7 +433,7 @@ function emptyCellClicked(){
   let day = $td.data('day')
   let progIndex = $tr.data('progIndex')
   let progGroupIndex = $tr.data('progGroupIndex')
-  let data = window.promptForm('<form><input name="toto"/><input name="tata"/></form>')
+  let data = window.promptForm('<form>Progression :<br><input name="progressionName"/><br>Du :<br/><input name="progressionStart" type="date"/><br>Au :<br><input name="progressionEnd" type="date"/><br><input type="submit"/></form>')
   console.log(data)
 }
 

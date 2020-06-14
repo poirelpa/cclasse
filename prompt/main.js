@@ -14,7 +14,6 @@ function promptModal(parent, options, callback) {
     width:200, height: 120,
     'parent': parent,
     'modal': true,
-    'alwaysOnTop' : true,
     'title' : options.title,
     'autoHideMenuBar': true,
     'webPreferences' : {

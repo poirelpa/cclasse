@@ -3,12 +3,7 @@ html, body {
  padding: 0;
  }
 body {
- font-family: Calibri, Verdana, sans-serif;
  display: flex;
-}
-
-.ui-icon{
-  cursor: pointer;
 }
 
 section#class{

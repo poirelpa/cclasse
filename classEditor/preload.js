@@ -1,7 +1,7 @@
 const {remote, ipcRenderer} = require('electron')
 const fs = require('fs').promises
 const path = require('path')
-require('./preloadTools.js')
+require('../preloadTools.js')
 
 
 
