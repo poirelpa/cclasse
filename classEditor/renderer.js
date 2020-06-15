@@ -229,11 +229,27 @@ function buildProgrammationsTable(){
 
   let prevDay
   let prevWeek
-  let addCell=function(row,periodBreak,prog, day){
-    let $td = $('<td class="empty">').appendTo($programmationRows[row])
-      .data('day',d)
+  let addCell=function(row,periodBreak,prog, day, d){
+    let progression
+    prog.progressions?.forEach((item, i) => {
+      console
+      if(item.start == d){
+        progression = item
+      }
+    });
+
+    let $td = $('<td>').appendTo($programmationRows[row])
+      .data('day',day)
     if(periodBreak)
       $td.addClass('periodBreak')
+    if(progression){
+      $td.append(`<span class="editable">${progression.name}</span><span class="addProgItem"/><span class="ui-icon ui-icon-trash"/>`)
+        .addClass('progression')
+        .data('progression',progression)
+    }else{
+      $td.addClass('empty')
+    }
+    return $td
   }
   for (var d in class_.days) {
     if (class_.days.hasOwnProperty(d)) {
@@ -241,7 +257,9 @@ function buildProgrammationsTable(){
       if(prevDay == null || day.getDay()<prevDay.getDay() || (day.getTime() - prevWeek.getTime() > 1000*60*60*24*6)){
         let f = $.datepicker.formatDate('d/m',day)
 
-        let $th = $(`<th>${f}</th>`).appendTo($header)
+        let $th = $(`<th>${f}<span class="deleteWeek ui-icon ui-icon-trash"></span></th>`)
+          .appendTo($header)
+          .data('day',day)
 
         let periodBreak = !prevWeek || day.getTime() - prevWeek?.getTime() > 1000*60*60*24*13
         if(periodBreak)
@@ -252,11 +270,11 @@ function buildProgrammationsTable(){
           class_.programmations.forEach((progGroup, i) => {
             if(progGroup.programmations?.length){
               progGroup.programmations.forEach((prog, j) => {
-                addCell(row, periodBreak, prog, day)
+                addCell(row, periodBreak, prog, day, d)
                 row ++
               });
             }else{
-              addCell(row, periodBreak, progGroup, day)
+              addCell(row, periodBreak, progGroup, day, d)
               row ++
             }
 
@@ -272,6 +290,13 @@ function buildProgrammationsTable(){
   $('.editable',$programmations).editable()
   $('.prog .addProgItem',$programmations).programItemSelector(getProgramItemSelectorOptions).on('programItemSelected',addProgItem)
   $('.progGroup .addProgItem',$programmations).programItemSelector(getProgramItemSelectorOptions).on('programItemSelected',addProgGroupItem)
+  $('.progression .addProgItem',$programmations).programItemSelector(getProgramItemSelectorOptions).on('programItemSelected',addProgressionItem)
+  $('td.progression',$programmations).each((i,item)=>{
+    let $item = $(item)
+    let weeks = $item.data('progression').duration
+    $item.attr('colspan',weeks  )
+    $item.nextAll().slice(0,weeks-1).remove()
+  })
   programmationsEditModeChange()
 }
 
@@ -394,7 +419,7 @@ function deleteProgGroupClick(){
   window.class_.programmations.splice(progGroupIndex,1)
   buildProgrammationsTable()
 }
-function addProgItem(){
+function addProgItem(e,item){
   let $tr = $(this).parents('tr')
   let progIndex = $tr.data('progIndex')
   let progGroupIndex = $tr.data('progGroupIndex')
@@ -407,10 +432,26 @@ function addProgGroupItem(e,item){
   let $tr = $(this).parents('tr')
   let progGroupIndex = $tr.data('progGroupIndex')
   if(item){
-    console.log(item)
     Object.assign(window.class_.programmations[progGroupIndex], item)
     buildProgrammationsTable()
   }
+}
+function addProgressionItem(e,item){
+  console.log(item)
+}
+
+function deleteWeekClicked(){
+  let day = $.datepicker.formatDate('yymmdd',$(this).parent().data('day'))
+  let nextWeek = $.datepicker.formatDate('yymmdd',$(this).parent().next().data('day'))
+  for (var date in window.class_.days) {
+    if (window.class_.days.hasOwnProperty(date)) {
+      if(date >= day && (!nextWeek || date < nextWeek)) {
+        delete window.class_.days[date]
+      }
+    }
+  }
+
+  buildProgrammationsTable()
 }
 
 function emptyCellClicked(){
@@ -419,8 +460,26 @@ function emptyCellClicked(){
   let day = $td.data('day')
   let progIndex = $tr.data('progIndex')
   let progGroupIndex = $tr.data('progGroupIndex')
-  let data = window.promptForm('<form>Progression :<br><input name="progressionName"/><br>Du :<br/><input name="progressionStart" type="date"/><br>Au :<br><input name="progressionEnd" type="date"/><br><input type="submit"/></form>')
-  console.log(data)
+  let formData = window.promptForm(`<form>A partir du <br/><input name="start" type="date" value="${$.datepicker.formatDate('yy-mm-dd',day)}"/><br><br>pour <input name="duration" type="number" value="1"/> semaines<br><br><input type="submit"/></form>`)
+  data = {
+    name:'nouvelle progression',
+    start:formData.start.replace(/-/g,''),
+    duration:formData.duration
+  }
+  let progs
+  let index
+  if(window.class_.programmations[progGroupIndex].programmations?.length){
+    progs = window.class_.programmations[progGroupIndex].programmations
+    index = progIndex
+  } else {
+    progs = window.class_.programmations
+    index = progGroupIndex
+  }
+  console.log([progs,index,progs[index]])
+  progs[index].progressions = progs[index].progressions || []
+  progs[index].progressions.push(data)
+
+  buildProgrammationsTable()
 }
 
 function getProgramItemSelectorOptions(){
@@ -443,6 +502,7 @@ $(function(){
     .on('click','.prog .deleteProg',deleteProgClick)
     .on('click','.progGroup .deleteProg',deleteProgGroupClick)
     .on('click','td.empty',emptyCellClicked)
+    .on('click','.deleteWeek',deleteWeekClicked)
 
 
   let path = "C:/Users/poirelp/AppData/Roaming/CClasse/storage/classes/toto.json"
