@@ -14,7 +14,8 @@ function launchProgramBrowser(window,options,callback){
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       enableRemoteModule:true
-    }
+    },
+    icon:path.join(__dirname, '../cc.ico')
   })
   selection = null
 

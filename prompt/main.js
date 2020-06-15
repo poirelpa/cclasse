@@ -19,7 +19,8 @@ function promptModal(parent, options, callback) {
     'webPreferences' : {
       preload: path.join(__dirname, 'preload.js'),
       enableRemoteModule:true
-    }
+    },
+    icon:path.join(__dirname, '../cc.ico')
   });
   result=null
   promptWindow.on('closed', () => {

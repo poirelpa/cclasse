@@ -11,7 +11,8 @@ function createWindow () {
       //nodeIntegration: true
       preload: path.join(__dirname, 'preload.js'),
       enableRemoteModule:true
-    }
+    },
+    icon:path.join(__dirname, '../cc.ico')
   })
 
   // and load the index.html of the app.
