@@ -15,18 +15,21 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
-   sodipodi:docname="cc.svg">
+   sodipodi:docname="cc.svg"
+   inkscape:export-filename="C:\Users\poirelp\cclasse\cc.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
   <defs
      id="defs2" />
   <sodipodi:namedview
      id="base"
-     pagecolor="#ffffff"
+     pagecolor="#cccccc"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="-52.189262"
+     inkscape:cx="165.66788"
      inkscape:cy="143.21281"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -37,7 +40,8 @@
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      units="px"
-     inkscape:pagecheckerboard="true" />
+     inkscape:pagecheckerboard="true"
+     showborder="true" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -55,28 +59,38 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-31.0747,52.12783)">
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:104.31282806px;line-height:1.25;font-family:'Bradley Hand ITC';-inkscape-font-specification:'Bradley Hand ITC';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:6.01804352"
-       x="59.322788"
-       y="13.286214"
-       id="text817"
-       transform="scale(1.0880799,0.91905015)"><tspan
-         sodipodi:role="line"
-         id="tspan815"
-         x="59.322788"
-         y="13.286214"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:Calibri;stroke-width:6.01804352">C</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:49.28713608px;line-height:1.25;font-family:'Bradley Hand ITC';-inkscape-font-specification:'Bradley Hand ITC';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.84348774"
-       x="68.505165"
-       y="-3.4988339"
-       id="text817-3"><tspan
-         sodipodi:role="line"
-         id="tspan815-3"
-         x="68.505165"
-         y="-3.4988339"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:Calibri;stroke-width:2.84348774">C</tspan></text>
+    <circle
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.6854111;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+       id="path4522"
+       cx="64.695702"
+       cy="-18.091074"
+       r="33.3564" />
+    <g
+       id="g4528"
+       transform="translate(-0.11688891,0.003779)">
+      <text
+         transform="scale(1.0880799,0.91905015)"
+         id="text817"
+         y="12.161958"
+         x="54.666199"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:100.8192215px;line-height:1.25;font-family:'Bradley Hand ITC';-inkscape-font-specification:'Bradley Hand ITC';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.81648922"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:Calibri;stroke-width:5.81648922"
+           y="12.161958"
+           x="54.666199"
+           id="tspan815"
+           sodipodi:role="line">C</tspan></text>
+      <text
+         id="text817-3"
+         y="-4.0059447"
+         x="63.305897"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:47.63642883px;line-height:1.25;font-family:'Bradley Hand ITC';-inkscape-font-specification:'Bradley Hand ITC';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.74825454"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Calibri;-inkscape-font-specification:Calibri;stroke-width:2.74825454"
+           y="-4.0059447"
+           x="63.305897"
+           id="tspan815-3"
+           sodipodi:role="line">C</tspan></text>
+    </g>
   </g>
 </svg>
