@@ -21,10 +21,8 @@
         <table id="programmations">
         </table>
         <br>
-        <label for="programmationsEditMode">Mode édition des programmations</label>
-        <input type="checkbox" id="programmationsEditMode" checked/>
-        <br>
-        <br>
+        <h3><label for="programmationsEditMode">Mode édition des programmations</label>
+        <input type="checkbox" id="programmationsEditMode"/></h3>
         <div id="programmationsEdit">
           <label for="classProgram">Programme</label>
           <select id="classProgram"></select>
@@ -66,15 +64,21 @@
           <label for="programmationName">Ajouter une matière</label>
           <a href="#" id="selectProgramItem"></a>
           <input id="programmationName"/>
-          <input id="programmationColor" type="color"/>
+          <input id="programmationColor" type="color" value="#ffffff"/>
           <a href="#" id="addProgrammation" class="ui-icon ui-icon-plus">Ajouter une matière</a>
         </div>
       </form>
+      <h3>Emplois du temps</h3>
+      <ul id="timeTablesList">
+      </ul>
+      <a href="#" id="addTimeTable">Ajouter un emploi du temps</a>
     </section>
     <script src="../node_modules/jquery-ui-dist/external/jquery/jquery.js"></script>
     <script src="../node_modules/jquery-ui-dist/jquery-ui.min.js"></script>
     <script src="../editable.js"></script>
     <script src="../programItemSelector.js"></script>
+    <script src="./rendererProgrammations.js"></script>
     <script src="./renderer.js"></script>
+    <script src="./rendererMenu.js"></script>
   </body>
 </html>

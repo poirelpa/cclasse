@@ -8,7 +8,7 @@
         $('<span class="ui-icon ui-icon-check">')
           .insertAfter($editable)
           .on('click',function(){
-            $(this).prev().prev().attr('contentEditable',false).editable()
+            $(this).prev().prev().attr('contentEditable',false).editable().trigger('change')
             $(this).prev().remove()
             $(this).remove()
           })
