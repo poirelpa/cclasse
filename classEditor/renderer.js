@@ -230,11 +230,12 @@ function buildProgrammationsTable(){
   let prevDay
   let prevWeek
   let addCell=function(row,periodBreak,prog, day, d){
-    let progression
-    prog.progressions?.forEach((item, i) => {
-      console
+    let progression, progressionIndex
+    prog.progressions?.forEach((item, k) => {
       if(item.start == d){
         progression = item
+        progressionIndex = k
+        return false
       }
     });
 
@@ -246,6 +247,8 @@ function buildProgrammationsTable(){
       $td.append(`<span class="editable">${progression.name}</span><span class="addProgItem"/><span class="ui-icon ui-icon-trash"/>`)
         .addClass('progression')
         .data('progression',progression)
+        .data('progressionIndex',progressionIndex)
+        .css('background-color',progression.color)
     }else{
       $td.addClass('empty')
     }
@@ -399,6 +402,12 @@ function progGroupNameChange(){
     let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
     class_.programmations[progGroupIndex].name = this.innerText
 }
+function progressionNameChange(){
+  let progIndex = $(this).parents('tr').data('progIndex')
+  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
+  let progressionIndex = $(this).data('progressionIndex')
+  window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex].name = this.innerText
+}
 
 function programmationsEditModeChange(){
   let show = $('#programmationsEditMode').get(0).checked
@@ -419,6 +428,15 @@ function deleteProgGroupClick(){
   window.class_.programmations.splice(progGroupIndex,1)
   buildProgrammationsTable()
 }
+function deleteProgressionClick(){
+  if(!confirm("Supprimer cette progression ?"))return
+  let progIndex = $(this).parents('tr').data('progIndex')
+  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
+  let progressionIndex = $(this).parents('td').data('progressionIndex')
+  window.class_.programmations[progGroupIndex].programmations[progIndex].progressions.splice(progressionIndex,1)
+  buildProgrammationsTable()
+
+}
 function addProgItem(e,item){
   let $tr = $(this).parents('tr')
   let progIndex = $tr.data('progIndex')
@@ -437,7 +455,14 @@ function addProgGroupItem(e,item){
   }
 }
 function addProgressionItem(e,item){
-  console.log(item)
+  let progIndex = $(this).parents('tr').data('progIndex')
+  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
+  let progressionIndex = $(this).parent('td').data('progressionIndex')
+
+  if(item){
+    Object.assign(window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex], item)
+    buildProgrammationsTable()
+  }
 }
 
 function deleteWeekClicked(){
@@ -499,8 +524,10 @@ $(function(){
     .on('click','.progGroup .addProg',addSubProgrammationClick)
     .on('editableChange','.progName',progNameChange)
     .on('editableChange','.progGroupName',progGroupNameChange)
+    .on('editableChange','.progression',progressionNameChange)
     .on('click','.prog .deleteProg',deleteProgClick)
     .on('click','.progGroup .deleteProg',deleteProgGroupClick)
+    .on('click','.progression .ui-icon-trash',deleteProgressionClick)
     .on('click','td.empty',emptyCellClicked)
     .on('click','.deleteWeek',deleteWeekClicked)
 
