@@ -36,7 +36,7 @@ section#class{
   font-weight: normal;
   min-width:35px
 }
-#programmations th.prog,#programmations th.progGroup{
+#programmations th.programmation,#programmations th.subject{
   min-width:150px;
   text-align: left;
 }
@@ -72,9 +72,9 @@ section#class{
   float:left;
 }
 
-#programmations tr:first-child >:first-child { border-top-left-radius: 3px; }
-#programmations tr:first-child >:last-child { border-top-right-radius: 3px; }
-#programmations tr:last-child >:first-child { border-bottom-left-radius: 3px; }
-#programmations tr:last-child >:last-child { border-bottom-right-radius: 3px; }
+#programmations tr:first-child >:first-child { border-top-left-radius: 5px; }
+#programmations tr:first-child >:last-child { border-top-right-radius: 5px; }
+#programmations tr:last-child >:first-child { border-bottom-left-radius: 5px; }
+#programmations tr:last-child >:last-child { border-bottom-right-radius: 5px; }
 #programmations tr:first-child > * { border-top-style: solid; }
 #programmations tr > :last-child { border-right-style: solid; }

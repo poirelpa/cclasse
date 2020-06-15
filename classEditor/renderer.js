@@ -184,54 +184,51 @@ function buildProgrammationsTable(){
 
   let $programmationRows = []
 
-  let buildProgGroupCell = function(name, progGroup, colspan){
-
-  }
-
   let row = 0
-  class_.programmations.forEach((progGroup, i) => {
+  class_.programmations.forEach((subject, i) => {
     let currentRow = row
-    if(progGroup.programmations?.length){
-      progGroup.programmations.forEach((prog, j) => {
-        $programmationRows[row]=$(`<tr><th class="prog"><span class="editable progName">${prog.name}</span><span class="addProgItem"></span><span class="deleteProg ui-icon ui-icon-trash"></span></th></tr>`)
-          .css('background-color',prog.color)
-          .data('uuid',prog.uuid)
-          .data('xpath',prog.xpath)
-          .data('progGroupIndex',i)
+    if(subject.programmations?.length>1 || subject.programmations?.[0]?.name){
+      subject.programmations.forEach((programmation, j) => {
+        $programmationRows[row]=$(`<tr><th class="programmation"><span class="editable programmationName">${programmation.name}</span><span class="addProgramItem"></span><span class="ui-icon ui-icon-trash"></span></th></tr>`)
+          .css('background-color',programmation.color)
+          .data('uuid',programmation.uuid)
+          .data('xpath',programmation.xpath)
+          .data('subjectIndex',i)
           .data('progIndex',j)
           .appendTo($programmations)
-          $('.prog .addProgItem',$programmationRows[row]).data('item',{uuid:prog.uuid,program:prog.program})
+          $('.programmation .addProgramItem',$programmationRows[row]).data('item',{uuid:programmation.uuid,program:programmation.program})
         row++
       });
     }
     else {
       $programmationRows[row]=$(`<tr></tr>`)
-        .css('background-color',progGroup.color)
-        .data('uuid',progGroup.uuid)
-        .data('xpath',progGroup.xpath)
-        .data('progGroupIndex',i)
+        .css('background-color',subject.color)
+        .data('uuid',subject.uuid)
+        .data('xpath',subject.xpath)
+        .data('subjectIndex',i)
+        .data('progIndex',0)
       .appendTo($programmations)
       row++
     }
     $programmationRows[currentRow].prepend(
-      $(`<th class="progGroup"><span class="editable progGroupName">${progGroup.name}</span><span class="addProg ui-icon ui-icon-plus"></span><span class="addProgItem"></span><span class="deleteProg ui-icon ui-icon-trash"></span></th>`)
-      .css('background-color',progGroup.color)
-      .data('uuid',progGroup.uuid)
-      .data('xpath',progGroup.xpath)
-      .data('progGroupIndex',i)
-      .attr('colspan',progGroup.programmations?.length ? 1 : 2)
-      .attr('rowspan',Math.max(progGroup.programmations?.length,1))
+      $(`<th class="subject"><span class="editable subjectName">${subject.name}</span><span class="addProgrammation ui-icon ui-icon-plus"></span><span class="addProgramItem"></span><span class="ui-icon ui-icon-trash"></span></th>`)
+      .css('background-color',subject.color)
+      .data('uuid',subject.uuid)
+      .data('xpath',subject.xpath)
+      .data('subjectIndex',i)
+      .attr('colspan',(subject.programmations?.length>1 || subject.programmations?.[0]?.name) ? 1 : 2)
+      .attr('rowspan',Math.max(subject.programmations?.length,1))
       .appendTo($programmations)
     )
-    $('.progGroup .addProgItem',$programmationRows[row]).data('item',{uuid:progGroup.uuid,program:progGroup.program})
+    $('.subject .addProgramItem',$programmationRows[row]).data('item',{uuid:subject.uuid,program:subject.program})
 
   })
 
   let prevDay
   let prevWeek
-  let addCell=function(row,periodBreak,prog, day, d){
+  let addCell=function(row,periodBreak,programmation, day, d){
     let progression, progressionIndex
-    prog.progressions?.forEach((item, k) => {
+    programmation.progressions?.forEach((item, k) => {
       if(item.start == d){
         progression = item
         progressionIndex = k
@@ -244,7 +241,7 @@ function buildProgrammationsTable(){
     if(periodBreak)
       $td.addClass('periodBreak')
     if(progression){
-      $td.append(`<span class="draggable-left"/><span class="draggable-right"/><span class="editable">${progression.name}</span><span class="addProgItem"/><span class="ui-icon ui-icon-trash"/>`)
+      $td.append(`<span class="draggable-left"/><span class="draggable-right"/><span class="editable">${progression.name}</span><span class="addProgramItem"/><span class="ui-icon ui-icon-trash"/>`)
         .addClass('progression')
         .data('progression',progression)
         .data('progressionIndex',progressionIndex)
@@ -270,14 +267,14 @@ function buildProgrammationsTable(){
 
 
           row = 0
-          class_.programmations.forEach((progGroup, i) => {
-            if(progGroup.programmations?.length){
-              progGroup.programmations.forEach((prog, j) => {
-                addCell(row, periodBreak, prog, day, d)
+          class_.programmations.forEach((subject, i) => {
+            if(subject.programmations?.length){
+              subject.programmations.forEach((programmation, j) => {
+                addCell(row, periodBreak, programmation, day, d)
                 row ++
               });
             }else{
-              addCell(row, periodBreak, progGroup, day, d)
+              addCell(row, periodBreak, subject, day, d)
               row ++
             }
 
@@ -291,9 +288,9 @@ function buildProgrammationsTable(){
 
 
   $('.editable',$programmations).editable()
-  $('.prog .addProgItem',$programmations).programItemSelector(getProgramItemSelectorOptions).on('programItemSelected',addProgItem)
-  $('.progGroup .addProgItem',$programmations).programItemSelector(getProgramItemSelectorOptions).on('programItemSelected',addProgGroupItem)
-  $('.progression .addProgItem',$programmations).programItemSelector(getProgramItemSelectorOptions).on('programItemSelected',addProgressionItem)
+  $('.programmation .addProgramItem',$programmations).programItemSelector(getProgramItemSelectorOptions).on('programItemSelected',addProgrammationItem)
+  $('.subject .addProgramItem',$programmations).programItemSelector(getProgramItemSelectorOptions).on('programItemSelected',addSubjectItem)
+  $('.progression .addProgramItem',$programmations).programItemSelector(getProgramItemSelectorOptions).on('programItemSelected',addProgressionItem)
   $('td.progression',$programmations).each((i,item)=>{
     let $item = $(item)
     let weeks = $item.data('progression')?.duration
@@ -397,32 +394,36 @@ function classProgramChange(){
   window.class_.program = $(this).val()
 }
 
-function addSubProgrammationClick(){
-  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
-  let progGroup = window.class_.programmations[progGroupIndex]
+function addProgrammationClick(){
+  let subjectIndex = $(this).parents('tr').data('subjectIndex')
+  let subject = window.class_.programmations[subjectIndex]
 
-  progGroup.programmations = progGroup.programmations || []
-  progGroup.programmations.push({
+  subject.programmations = subject.programmations || []
+  if(subject.programmations.length==1 && !subject.programmations[0].name){
+    subject.programmations[0].name="nouvelle programmation"
+    subject.programmations[0].color=subject.color
+  }else
+  subject.programmations.push({
     name:"nouvelle programmation",
-    color:progGroup.color
+    color:subject.color
   })
   buildProgrammationsTable()
 }
 
-function progNameChange(e){
+function programmationNameChange(e){
   let progIndex = $(this).parents('tr').data('progIndex')
-  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
-  window.class_.programmations[progGroupIndex].programmations[progIndex].name = this.innerText
+  let subjectIndex = $(this).parents('tr').data('subjectIndex')
+  window.class_.programmations[subjectIndex].programmations[progIndex].name = this.innerText
 }
-function progGroupNameChange(){
-    let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
-    class_.programmations[progGroupIndex].name = this.innerText
+function subjectNameChange(){
+    let subjectIndex = $(this).parents('tr').data('subjectIndex')
+    class_.programmations[subjectIndex].name = this.innerText
 }
 function progressionNameChange(){
   let progIndex = $(this).parents('tr').data('progIndex')
-  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
+  let subjectIndex = $(this).parents('tr').data('subjectIndex')
   let progressionIndex = $(this).data('progressionIndex')
-  window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex].name = this.innerText
+  window.class_.programmations[subjectIndex].programmations[progIndex].progressions[progressionIndex].name = this.innerText
 }
 
 function programmationsEditModeChange(){
@@ -435,49 +436,49 @@ function programmationsEditModeChange(){
 function deleteProgClick(){
   if(!confirm("Supprimer cette programmation ?"))return
   let progIndex = $(this).parents('tr').data('progIndex')
-  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
-  window.class_.programmations[progGroupIndex].programmations.splice(progIndex,1)
+  let subjectIndex = $(this).parents('tr').data('subjectIndex')
+  window.class_.programmations[subjectIndex].programmations.splice(progIndex,1)
   buildProgrammationsTable()
 }
-function deleteProgGroupClick(){
+function deleteSubjectClick(){
   if(!confirm("Supprimer cette programmation ?"))return
-  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
-  window.class_.programmations.splice(progGroupIndex,1)
+  let subjectIndex = $(this).parents('tr').data('subjectIndex')
+  window.class_.programmations.splice(subjectIndex,1)
   buildProgrammationsTable()
 }
 function deleteProgressionClick(){
   if(!confirm("Supprimer cette progression ?"))return
   let progIndex = $(this).parents('tr').data('progIndex')
-  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
+  let subjectIndex = $(this).parents('tr').data('subjectIndex')
   let progressionIndex = $(this).parents('td=').data('progressionIndex')
-  window.class_.programmations[progGroupIndex].programmations[progIndex].progressions.splice(progressionIndex,1)
+  window.class_.programmations[subjectIndex].programmations[progIndex].progressions.splice(progressionIndex,1)
   buildProgrammationsTable()
 
 }
-function addProgItem(e,item){
+function addProgrammationItem(e,item){
   let $tr = $(this).parents('tr')
   let progIndex = $tr.data('progIndex')
-  let progGroupIndex = $tr.data('progGroupIndex')
+  let subjectIndex = $tr.data('subjectIndex')
   if(item){
-    Object.assign(window.class_.programmations[progGroupIndex].programmations[progIndex], item)
+    Object.assign(window.class_.programmations[subjectIndex].programmations[progIndex], item)
     buildProgrammationsTable()
   }
 }
-function addProgGroupItem(e,item){
+function addSubjectItem(e,item){
   let $tr = $(this).parents('tr')
-  let progGroupIndex = $tr.data('progGroupIndex')
+  let subjectIndex = $tr.data('subjectIndex')
   if(item){
-    Object.assign(window.class_.programmations[progGroupIndex], item)
+    Object.assign(window.class_.programmations[subjectIndex], item)
     buildProgrammationsTable()
   }
 }
 function addProgressionItem(e,item){
   let progIndex = $(this).parents('tr').data('progIndex')
-  let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
+  let subjectIndex = $(this).parents('tr').data('subjectIndex')
   let progressionIndex = $(this).parent('td').data('progressionIndex')
 
   if(item){
-    Object.assign(window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex], item)
+    Object.assign(window.class_.programmations[subjectIndex].programmations[progIndex].progressions[progressionIndex], item)
     buildProgrammationsTable()
   }
 }
@@ -501,8 +502,8 @@ function emptyCellClicked(){
   let $td = $(this)
   let $tr = $td.parent()
   let day = $td.data('day')
-  let progIndex = $tr.data('progIndex')
-  let progGroupIndex = $tr.data('progGroupIndex')
+  let progIndex = $tr.data('progIndex')||0
+  let subjectIndex = $tr.data('subjectIndex')
   //let formData = window.promptForm(`<form>A partir du <br/><input name="start" type="date" value="${$.datepicker.formatDate('yy-mm-dd',day)}"/><br><br>pour <input name="duration" type="number" value="1"/> semaines<br><br><input type="submit"/></form>`)
   //if(!formData.start)return
   data = {
@@ -510,18 +511,11 @@ function emptyCellClicked(){
     start:$.datepicker.formatDate('yymmdd',day),
     duration:1
   }
-  let progs
-  let index
-  if(window.class_.programmations[progGroupIndex].programmations?.length){
-    progs = window.class_.programmations[progGroupIndex].programmations
-    index = progIndex
-  } else {
-    progs = window.class_.programmations
-    index = progGroupIndex
-  }
-  console.log([progs,index,progs[index]])
-  progs[index].progressions = progs[index].progressions || []
-  progs[index].progressions.push(data)
+  window.class_.programmations[subjectIndex].programmations = window.class_.programmations[subjectIndex].programmations || [{
+    progressions:[]
+  }]
+  window.class_.programmations[subjectIndex].programmations[progIndex].progressions = window.class_.programmations[subjectIndex].programmations[progIndex].progressions ||[]
+  window.class_.programmations[subjectIndex].programmations[progIndex].progressions.push(data)
 
   buildProgrammationsTable()
 }
@@ -544,14 +538,14 @@ function progressionDragStop(e){
         if(left <=$item.get(0).offsetWidth/2+2 && left >= -($item.prev()?.get(0)?.offsetWidth/2-2)){
 
           let progIndex = $(this).parents('tr').data('progIndex')
-          let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
+          let subjectIndex = $(this).parents('tr').data('subjectIndex')
           let progressionIndex = $(this).parent('td').data('progressionIndex')
           if($this.hasClass('draggable-left')){
-            window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex].start = $.datepicker.formatDate('yymmdd',$item.data('day'))
-            window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex].duration = Math.max(window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex].duration-weeks,1)
+            window.class_.programmations[subjectIndex].programmations[progIndex].progressions[progressionIndex].start = $.datepicker.formatDate('yymmdd',$item.data('day'))
+            window.class_.programmations[subjectIndex].programmations[progIndex].progressions[progressionIndex].duration = Math.max(window.class_.programmations[subjectIndex].programmations[progIndex].progressions[progressionIndex].duration-weeks,1)
           }
           if($this.hasClass('draggable-right')){
-            window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex].duration = weeks
+            window.class_.programmations[subjectIndex].programmations[progIndex].progressions[progressionIndex].duration = weeks
           }
           buildProgrammationsTable()
           return
@@ -570,32 +564,6 @@ function progressionDragStop(e){
     }
   })
   return true
-      /*while(left < 0 && $this.hasClass('draggable-left')){
-        //item
-        //left -=
-      }
-      console.log(left)
-      if(left>item.offsetWidth/2-3){
-        left -= item.offsetWidth
-        weeks++
-      }
-      if(left <=item.offsetWidth/2-3){
-        weeks = Math.max(weeks,1)
-        let progIndex = $(this).parents('tr').data('progIndex')
-        let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
-        let progressionIndex = $(this).parent('td').data('progressionIndex')
-        if($this.hasClass('draggable-left')){
-          window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex].start = $.datepicker.formatDate('yymmdd',$(item).next().data('day'))
-        }
-        if($this.hasClass('draggable-right')){
-          window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex].duration = weeks
-        }
-          console.log(window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex])
-        buildProgrammationsTable()
-        return false
-      }
-    }
-  return true*/
 }
 
 $(function(){
@@ -608,12 +576,12 @@ $(function(){
   $('#programmationsEditMode').on('change',programmationsEditModeChange)
 
   $('#programmations')
-    .on('click','.progGroup .addProg',addSubProgrammationClick)
-    .on('editableChange','.progName',progNameChange)
-    .on('editableChange','.progGroupName',progGroupNameChange)
+    .on('click','.subject .addProgrammation',addProgrammationClick)
+    .on('editableChange','.programmationName',programmationNameChange)
+    .on('editableChange','.subjectName',subjectNameChange)
     .on('editableChange','.progression',progressionNameChange)
-    .on('click','.prog .deleteProg',deleteProgClick)
-    .on('click','.progGroup .deleteProg',deleteProgGroupClick)
+    .on('click','.programmation .ui-icon-trash',deleteProgClick)
+    .on('click','.subject .ui-icon-trash',deleteSubjectClick)
     .on('click','.progression .ui-icon-trash',deleteProgressionClick)
     .on('click','td.empty',emptyCellClicked)
     .on('click','.deleteWeek',deleteWeekClicked)
