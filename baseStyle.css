@@ -5,3 +5,11 @@ body {
 .ui-icon{
   cursor: pointer;
 }
+
+input[type=color]{
+  width:14px;
+  height:17px
+}
+input[type=number]{
+  width:45px;
+}

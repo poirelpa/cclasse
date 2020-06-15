@@ -20,26 +20,38 @@ section#class{
   display:block;
   text-align: center;
 }
-input[type=color]{
-  width:14px;
-  height:17px
-}
 
 #programmations{
-  border-collapse: collapse;
-    border: 3px solid #888
+  border-collapse: separate;
+  border-spacing: 0
 }
 #programmations td, #programmations th{
-  border:1px solid #888
+      border: solid 1px #555;
+      border-style: none none solid solid;
 }
 #programmations th{
   font-weight: normal;
-  min-width:40px
+  min-width:35px
+}
+#programmations th.prog,#programmations th.progGroup{
+  min-width:150px;
+  padding:0 3px;
+  text-align: left;
 }
 #programmations .periodBreak{
-  border-left-width: 3px
+  border-left-width: 2px
 }
 
 #programmations td.empty{
   cursor:cell
 }
+
+td {
+}
+
+#programmations tr:first-child >:first-child { border-top-left-radius: 3px; }
+#programmations tr:first-child >:last-child { border-top-right-radius: 3px; }
+#programmations tr:last-child >:first-child { border-bottom-left-radius: 3px; }
+#programmations tr:last-child >:last-child { border-bottom-right-radius: 3px; }
+#programmations tr:first-child > * { border-top-style: solid; }
+#programmations tr > :last-child { border-right-style: solid; }
