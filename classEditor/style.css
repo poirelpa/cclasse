@@ -74,3 +74,7 @@ section#class{
 #programmations tr:last-child >:last-child { border-bottom-right-radius: 5px; }
 #programmations tr:first-child > * { border-top-style: solid; }
 #programmations tr > :last-child { border-right-style: solid; }
+
+#programmationsEdit{
+  margin-left:10px
+}
