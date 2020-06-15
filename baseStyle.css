@@ -13,3 +13,9 @@ input[type=color]{
 input[type=number]{
   width:45px;
 }
+
+[contentEditable=true]:focus{
+  outline:none;
+  border:none;
+  background: #ddd4
+}

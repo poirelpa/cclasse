@@ -161,7 +161,7 @@ function newClass(menuItem, browserWindow, event){
 function updateClass(){
 
   Object.assign(window.class_,{
-    name:$('#className').val(),
+    name:$('#className').text(),
     program:$('#classProgram').val()
   })
   return window.class_
@@ -169,7 +169,7 @@ function updateClass(){
 
 function displayClass(class_){
   console.log(class_)
-  $('#className').val(class_.name)
+  $('#className').text(class_.name).editable()
   $('#classProgram').val(class_.program)
   window.class_ = class_
   buildProgrammationsTable()
