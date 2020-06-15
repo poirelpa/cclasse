@@ -26,9 +26,8 @@ section#class{
   border-spacing: 0
 }
 #programmations td, #programmations th{
-  border: solid 1px #555;
+  border: solid thin #777;
   border-style: none none solid solid;
-  height:1px;
   position:relative;
   padding:0 4px
 }
@@ -41,7 +40,7 @@ section#class{
   text-align: left;
 }
 #programmations .periodBreak{
-  border-left-width: 2px
+  border-left-width: medium
 }
 
 #programmations td.empty{
