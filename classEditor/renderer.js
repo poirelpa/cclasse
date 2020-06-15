@@ -570,11 +570,9 @@ function subjectDragStop(){
   let $row = this.parents('tr')
   let subjectIndex = $row.data('subjectIndex')
   let prevRow
-  let i = 0
   while($row?.length && $row != prevRow){
     let $firstCell = $row.children().first()
     prevRow = $row
-    i++
     if(top<0){ // higher
       do{
         $row = $row.prev()
@@ -600,11 +598,39 @@ function subjectDragStop(){
       return true
     }
   }
-  console.log($row)
   return true
 }
 
 function programmationDragStop(){
+  let top = this.position().top + 5
+  let $row = this.parents('tr')
+  let subjectIndex = $row.data('subjectIndex')
+  let progIndex = $row.data('progIndex')
+  let $prevRow
+  while($row?.length && $row != $prevRow && $row.data('subjectIndex')==subjectIndex){
+    $prevRow = $row
+    if(top<0){ // higher
+      console.log('higher',$row.text())
+      $row = $row.prev()
+      top += $row.outerHeight()
+    } else if(top>$row.outerHeight()){ // lower
+      console.log('lower',$row.text())
+        top -= $row.outerHeight()
+        $row = $row.next()
+    } else { // found !
+      console.log('trouve',$row.text())
+      let newProgIndex = $row.data('progIndex')
+      if(newProgIndex == progIndex) return true
+      if(top > $row.outerHeight() /2)
+        newProgIndex ++
+
+      if(newProgIndex > progIndex)
+        newProgIndex --
+      window.class_.programmations[subjectIndex].programmations.splice(newProgIndex, 0,  window.class_.programmations[subjectIndex].programmations.splice(progIndex, 1)[0])
+      buildProgrammationsTable()
+      return true
+    }
+  }
   return true
 }
 
