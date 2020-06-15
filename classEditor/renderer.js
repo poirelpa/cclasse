@@ -241,7 +241,7 @@ function buildProgrammationsTable(){
     if(periodBreak)
       $td.addClass('periodBreak')
     if(progression){
-      $td.append(`<span class="draggable-left"/><span class="draggable-right"/><span class="editable">${progression.name}</span><span class="addProgramItem"/><span class="ui-icon ui-icon-trash"/>`)
+      $td.append(`<span class="draggable-left ui-icon ui-icon-grip-dotted-vertical"/><span class="draggable-right ui-icon ui-icon-grip-dotted-vertical"/><span class="editable">${progression.name}</span><span class="addProgramItem"/><span class="ui-icon ui-icon-trash"/>`)
         .addClass('progression')
         .data('progression',progression)
         .data('progressionIndex',progressionIndex)
@@ -524,7 +524,7 @@ function getProgramItemSelectorOptions(){
 }
 
 function progressionDragStop(e){
-  let $this = $(this)+2
+  let $this = $(this)
   let left = $this.position().left
   let day = $this.parent().data('day')
   let weeks = 0
@@ -536,9 +536,9 @@ function progressionDragStop(e){
       while($item.length){
         if(left <=$item.get(0).offsetWidth/2 && left >= -($item.prev()?.get(0)?.offsetWidth/2)){
 
-          let progIndex = $(this).parents('tr').data('progIndex')
-          let subjectIndex = $(this).parents('tr').data('subjectIndex')
-          let progressionIndex = $(this).parent('td').data('progressionIndex')
+          let progIndex = $this.parents('tr').data('progIndex')
+          let subjectIndex = $this.parents('tr').data('subjectIndex')
+          let progressionIndex = $this.parent('td').data('progressionIndex')
           if($this.hasClass('draggable-left')){
             window.class_.programmations[subjectIndex].programmations[progIndex].progressions[progressionIndex].start = $.datepicker.formatDate('yymmdd',$item.data('day'))
             window.class_.programmations[subjectIndex].programmations[progIndex].progressions[progressionIndex].duration = Math.max(window.class_.programmations[subjectIndex].programmations[progIndex].progressions[progressionIndex].duration-weeks,1)

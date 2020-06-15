@@ -50,16 +50,19 @@ section#class{
 
 #programmations .progression .draggable-left, #programmations .progression .draggable-right{
   cursor:col-resize;
-  width: 4px;
-  height:100%;
-  background-color: #ffffff55;
+
   position:absolute;
-  left:0;
-  top:0;
+  left:0px;
+  top:50%;
+  background-position:-5px -224px;
+  width:10px;
+  margin-top:-8px;
 }
 #programmations .progression .draggable-right{
   left:auto;
-  right:0;
+  background-position:0px -224px;
+  right:0px;
+  z-index: 100
 }
 
 #programmations .ui-icon-grip-dotted-horizontal{
