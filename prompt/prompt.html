@@ -4,7 +4,7 @@
   <link rel="stylesheet" href="../baseStyle.css">
   <script src="../node_modules/jquery-ui-dist/external/jquery/jquery.js"></script>
   </head>
-  <body>
+  <body onkeydown="pressed(event)">
     <p id="label"></p>
     <p>
       <input type = "text" id="data" value="" onkeydown="pressed(event)">
@@ -23,15 +23,18 @@
     }
 
     function response() {
-      window.closeWindow(document.getElementById("data").value)
+      if(!options.form){
+        window.closeWindow(document.getElementById("data").value)
+      }
     }
 
+    var options
     window.onload=function() {
-      var options = window.getOptions()
+      options = window.getOptions()
       console.log(options)
       if(options.form){
           document.body.innerHTML=options.form
-
+          $('input,select,textarea',  document.forms[0]).first().focus()
           document.forms[0].onsubmit = function(){
             closeWindow($(this).serializeArray())
             return false

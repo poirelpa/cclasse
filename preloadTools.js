@@ -17,7 +17,12 @@ window.prompt = function(title,msg,val){
 }
 
 window.promptForm = function(form){
-  return ipcRenderer.sendSync("prompt", {form:form})
+  let data = ipcRenderer.sendSync("prompt", {form:form}) || []
+  let result = {}
+  data.forEach((item, i) => {
+    result[item.name] = item.value
+  });
+  return result
 }
 
 window.confirm = function(msg){
