@@ -189,7 +189,7 @@ function buildProgrammationsTable(){
     let currentRow = row
     if(subject.programmations?.length>1 || subject.programmations?.[0]?.name){
       subject.programmations.forEach((programmation, j) => {
-        $programmationRows[row]=$(`<tr><th class="programmation"><span class="editable programmationName">${programmation.name}</span><span class="addProgramItem"></span><span class="ui-icon ui-icon-trash"></span></th></tr>`)
+        $programmationRows[row]=$(`<tr><th class="programmation"><span class="ui-icon ui-icon-grip-dotted-horizontal"/><span class="editable programmationName">${programmation.name}</span><span class="addProgramItem"></span><span class="ui-icon ui-icon-trash"></span></th></tr>`)
           .css('background-color',programmation.color)
           .data('uuid',programmation.uuid)
           .data('xpath',programmation.xpath)
@@ -211,7 +211,7 @@ function buildProgrammationsTable(){
       row++
     }
     $programmationRows[currentRow].prepend(
-      $(`<th class="subject"><span class="editable subjectName">${subject.name}</span><span class="addProgrammation ui-icon ui-icon-plus"></span><span class="addProgramItem"></span><span class="ui-icon ui-icon-trash"></span></th>`)
+      $(`<th class="subject"><span class="ui-icon ui-icon-grip-dotted-horizontal"/><span class="editable subjectName">${subject.name}</span><span class="addProgrammation ui-icon ui-icon-plus"></span><span class="addProgramItem"></span><span class="ui-icon ui-icon-trash"></span></th>`)
       .css('background-color',subject.color)
       .data('uuid',subject.uuid)
       .data('xpath',subject.xpath)
@@ -297,21 +297,20 @@ function buildProgrammationsTable(){
     $item.attr('colspan',weeks  )
     $item.nextAll().slice(0,weeks-1).remove()
   })
-  /*$('.draggable-left').each((i,item)=>{
-    console.log($(item).parent())
-    if(!$(item).parent().prev().hasClass('empty'))
-      $(item).remove()
-  })
-  $('.draggable-right').each((i,item)=>{
-    console.log($(item).parent())
-    if(!$(item).parent().next().hasClass('empty'))
-      $(item).remove()
-  })*/
   $('.draggable-left,.draggable-right',$programmations).draggable({
     axis:'x',
     revert:progressionDragStop,
     zIndex:100
-    //stop:progressionDragStop
+  })
+  $('.subject .ui-icon-grip-dotted-horizontal',$programmations).draggable({
+    axis:'y',
+    revert:subjectDragStop,
+    zIndex:100
+  })
+  $('.programmation .ui-icon-grip-dotted-horizontal',$programmations).draggable({
+    axis:'y',
+    revert:programmationDragStop,
+    zIndex:100
   })
   programmationsEditModeChange()
 }
@@ -450,7 +449,7 @@ function deleteProgressionClick(){
   if(!confirm("Supprimer cette progression ?"))return
   let progIndex = $(this).parents('tr').data('progIndex')
   let subjectIndex = $(this).parents('tr').data('subjectIndex')
-  let progressionIndex = $(this).parents('td=').data('progressionIndex')
+  let progressionIndex = $(this).parents('td').data('progressionIndex')
   window.class_.programmations[subjectIndex].programmations[progIndex].progressions.splice(progressionIndex,1)
   buildProgrammationsTable()
 
@@ -525,7 +524,7 @@ function getProgramItemSelectorOptions(){
 }
 
 function progressionDragStop(e){
-  let $this = $(this)
+  let $this = $(this)+2
   let left = $this.position().left
   let day = $this.parent().data('day')
   let weeks = 0
@@ -535,7 +534,7 @@ function progressionDragStop(e){
     let $item = $(item)
     if($item.data('day') == day){
       while($item.length){
-        if(left <=$item.get(0).offsetWidth/2+2 && left >= -($item.prev()?.get(0)?.offsetWidth/2-2)){
+        if(left <=$item.get(0).offsetWidth/2 && left >= -($item.prev()?.get(0)?.offsetWidth/2)){
 
           let progIndex = $(this).parents('tr').data('progIndex')
           let subjectIndex = $(this).parents('tr').data('subjectIndex')
@@ -549,11 +548,11 @@ function progressionDragStop(e){
           }
           buildProgrammationsTable()
           return
-        } else if(left>$item.get(0).offsetWidth/2+2){
+        } else if(left>$item.get(0).offsetWidth/2){
           left -= $item.get(0).offsetWidth
           $item = $item.next()
           weeks++
-        } else if(left < - $item.prev()?.get(0)?.offsetWidth/2-2){
+        } else if(left < - $item.prev()?.get(0)?.offsetWidth/2){
           $item = $item.prev(0)
           left += $item.get(0).offsetWidth
           weeks--
@@ -563,6 +562,49 @@ function progressionDragStop(e){
       return false
     }
   })
+  return true
+}
+
+function subjectDragStop(){
+  let top = this.position().top + 5
+  let $row = this.parents('tr')
+  let subjectIndex = $row.data('subjectIndex')
+  let prevRow
+  let i = 0
+  while($row?.length && $row != prevRow){
+    let $firstCell = $row.children().first()
+    prevRow = $row
+    i++
+    if(top<0){ // higher
+      do{
+        $row = $row.prev()
+        $firstCell = $row.children().first()
+        top += $row.outerHeight()
+      }while($row.length && !$firstCell.hasClass('subject'))
+    } else if(top>$firstCell.outerHeight()){ // lower
+      do{
+        top -= $row.outerHeight()
+        $row = $row.next()
+        $firstCell = $row.children().first()
+      }while($row.length && !$firstCell.hasClass('subject'))
+    } else { // found !
+      let newSubjectIndex = $row.data('subjectIndex')
+      if(newSubjectIndex == subjectIndex) return true
+      if(top > $firstCell.outerHeight() /2)
+        newSubjectIndex ++
+
+      if(newSubjectIndex > subjectIndex)
+        newSubjectIndex --
+      window.class_.programmations.splice(newSubjectIndex, 0,  window.class_.programmations.splice(subjectIndex, 1)[0])
+      buildProgrammationsTable()
+      return true
+    }
+  }
+  console.log($row)
+  return true
+}
+
+function programmationDragStop(){
   return true
 }
 

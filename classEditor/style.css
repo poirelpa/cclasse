@@ -48,7 +48,7 @@ section#class{
   cursor:cell
 }
 
-#programmations .progression .draggable-left{
+#programmations .progression .draggable-left, #programmations .progression .draggable-right{
   cursor:col-resize;
   width: 4px;
   height:100%;
@@ -58,18 +58,12 @@ section#class{
   top:0;
 }
 #programmations .progression .draggable-right{
-  cursor:col-resize;
-  display:block;
-  width: 4px;
-  height:100%;
-  background-color: #ffffff55;
-  position:absolute;
+  left:auto;
   right:0;
-  top:0
 }
-#programmations .progression .editable{
-  display:inline-block;
-  float:left;
+
+#programmations .ui-icon-grip-dotted-horizontal{
+  cursor:row-resize;
 }
 
 #programmations tr:first-child >:first-child { border-top-left-radius: 5px; }
