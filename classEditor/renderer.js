@@ -244,7 +244,7 @@ function buildProgrammationsTable(){
     if(periodBreak)
       $td.addClass('periodBreak')
     if(progression){
-      $td.append(`<span class="editable">${progression.name}</span><span class="addProgItem"/><span class="ui-icon ui-icon-trash"/>`)
+      $td.append(`<span class="draggable-left"/><span class="draggable-right"/><span class="editable">${progression.name}</span><span class="addProgItem"/><span class="ui-icon ui-icon-trash"/>`)
         .addClass('progression')
         .data('progression',progression)
         .data('progressionIndex',progressionIndex)
@@ -296,9 +296,25 @@ function buildProgrammationsTable(){
   $('.progression .addProgItem',$programmations).programItemSelector(getProgramItemSelectorOptions).on('programItemSelected',addProgressionItem)
   $('td.progression',$programmations).each((i,item)=>{
     let $item = $(item)
-    let weeks = $item.data('progression').duration
+    let weeks = $item.data('progression')?.duration
     $item.attr('colspan',weeks  )
     $item.nextAll().slice(0,weeks-1).remove()
+  })
+  /*$('.draggable-left').each((i,item)=>{
+    console.log($(item).parent())
+    if(!$(item).parent().prev().hasClass('empty'))
+      $(item).remove()
+  })
+  $('.draggable-right').each((i,item)=>{
+    console.log($(item).parent())
+    if(!$(item).parent().next().hasClass('empty'))
+      $(item).remove()
+  })*/
+  $('.draggable-left,.draggable-right',$programmations).draggable({
+    axis:'x',
+    revert:progressionDragStop,
+    zIndex:100
+    //stop:progressionDragStop
   })
   programmationsEditModeChange()
 }
@@ -411,8 +427,9 @@ function progressionNameChange(){
 
 function programmationsEditModeChange(){
   let show = $('#programmationsEditMode').get(0).checked
-  $('span.ui-icon','#programmations').css('display',show?'inline-block':'none')
+  $('span.ui-icon, .draggable-left, .draggable-right','#programmations').css('display',show?'inline-block':'none')
   $('#programmationsEdit').css('display',show?'block':'none')
+  $('#programmations td.empty').css('cursor',show?'cell':'default')
 }
 
 function deleteProgClick(){
@@ -432,7 +449,7 @@ function deleteProgressionClick(){
   if(!confirm("Supprimer cette progression ?"))return
   let progIndex = $(this).parents('tr').data('progIndex')
   let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
-  let progressionIndex = $(this).parents('td').data('progressionIndex')
+  let progressionIndex = $(this).parents('td=').data('progressionIndex')
   window.class_.programmations[progGroupIndex].programmations[progIndex].progressions.splice(progressionIndex,1)
   buildProgrammationsTable()
 
@@ -480,16 +497,18 @@ function deleteWeekClicked(){
 }
 
 function emptyCellClicked(){
+  if(!$('#programmationsEditMode').get(0).checked) return
   let $td = $(this)
   let $tr = $td.parent()
   let day = $td.data('day')
   let progIndex = $tr.data('progIndex')
   let progGroupIndex = $tr.data('progGroupIndex')
-  let formData = window.promptForm(`<form>A partir du <br/><input name="start" type="date" value="${$.datepicker.formatDate('yy-mm-dd',day)}"/><br><br>pour <input name="duration" type="number" value="1"/> semaines<br><br><input type="submit"/></form>`)
+  //let formData = window.promptForm(`<form>A partir du <br/><input name="start" type="date" value="${$.datepicker.formatDate('yy-mm-dd',day)}"/><br><br>pour <input name="duration" type="number" value="1"/> semaines<br><br><input type="submit"/></form>`)
+  //if(!formData.start)return
   data = {
     name:'nouvelle progression',
-    start:formData.start.replace(/-/g,''),
-    duration:formData.duration
+    start:$.datepicker.formatDate('yymmdd',day),
+    duration:1
   }
   let progs
   let index
@@ -509,6 +528,74 @@ function emptyCellClicked(){
 
 function getProgramItemSelectorOptions(){
   return {program:window.class_.program}
+}
+
+function progressionDragStop(e){
+  let $this = $(this)
+  let left = $this.position().left
+  let day = $this.parent().data('day')
+  let weeks = 0
+  let start = day
+  let $baseItem
+  $('#programmations tr').first().children().each((i,item)=>{
+    let $item = $(item)
+    if($item.data('day') == day){
+      while($item.length){
+        if(left <=$item.get(0).offsetWidth/2+2 && left >= -($item.prev()?.get(0)?.offsetWidth/2-2)){
+
+          let progIndex = $(this).parents('tr').data('progIndex')
+          let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
+          let progressionIndex = $(this).parent('td').data('progressionIndex')
+          if($this.hasClass('draggable-left')){
+            window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex].start = $.datepicker.formatDate('yymmdd',$item.data('day'))
+            window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex].duration = Math.max(window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex].duration-weeks,1)
+          }
+          if($this.hasClass('draggable-right')){
+            window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex].duration = weeks
+          }
+          buildProgrammationsTable()
+          return
+        } else if(left>$item.get(0).offsetWidth/2+2){
+          left -= $item.get(0).offsetWidth
+          $item = $item.next()
+          weeks++
+        } else if(left < - $item.prev()?.get(0)?.offsetWidth/2-2){
+          $item = $item.prev(0)
+          left += $item.get(0).offsetWidth
+          weeks--
+        }
+        console.log($item.get(0).innerText, left,weeks)
+      }
+      return false
+    }
+  })
+  return true
+      /*while(left < 0 && $this.hasClass('draggable-left')){
+        //item
+        //left -=
+      }
+      console.log(left)
+      if(left>item.offsetWidth/2-3){
+        left -= item.offsetWidth
+        weeks++
+      }
+      if(left <=item.offsetWidth/2-3){
+        weeks = Math.max(weeks,1)
+        let progIndex = $(this).parents('tr').data('progIndex')
+        let progGroupIndex = $(this).parents('tr').data('progGroupIndex')
+        let progressionIndex = $(this).parent('td').data('progressionIndex')
+        if($this.hasClass('draggable-left')){
+          window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex].start = $.datepicker.formatDate('yymmdd',$(item).next().data('day'))
+        }
+        if($this.hasClass('draggable-right')){
+          window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex].duration = weeks
+        }
+          console.log(window.class_.programmations[progGroupIndex].programmations[progIndex].progressions[progressionIndex])
+        buildProgrammationsTable()
+        return false
+      }
+    }
+  return true*/
 }
 
 $(function(){
