@@ -7,6 +7,7 @@ function createWindow () {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    show:false,
     webPreferences: {
       //nodeIntegration: true
       preload: path.join(__dirname, 'preload.js'),
@@ -18,6 +19,10 @@ function createWindow () {
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, 'index.html'))
   mainWindow.maximize()
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show()
+  })
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
 }

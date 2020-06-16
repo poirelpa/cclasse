@@ -10,8 +10,8 @@ function launch(window,options,callback){
   let window_ = new BrowserWindow({
     width: 800,
     height: 600,
-    parent:options.select?window:null,
-    modal:!!options.select,
+    parent:options?window:null,
+    modal:!!options,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       enableRemoteModule:true

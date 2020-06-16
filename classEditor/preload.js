@@ -50,7 +50,8 @@ window.getProgramsFilesList = function(){
 
 window.launchTimeTableEditor = function(timeTable, callbackUpdate, callbackSave){
   ipcRenderer.send("launchTimeTableEditor",timeTable)
-
+  ipcRenderer.removeAllListeners('updateTimeTable')
+  ipcRenderer.removeAllListeners('saveClass')
   ipcRenderer.on('updateTimeTable', callbackUpdate)
   ipcRenderer.on('saveClass',callbackSave)
 }
