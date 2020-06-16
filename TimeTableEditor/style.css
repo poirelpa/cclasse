@@ -13,8 +13,8 @@ tr.min55 > *, tr.min30 > th{
 tr.min25 > *, tr.min0 > th{
   border-bottom: thin solid #ccc;
 }
-th.day{
-  min-width:250px
+th.day,td.slot{
+  width:250px
 }
 
 tr:last-child > td:first-child{
@@ -23,4 +23,19 @@ tr:last-child > td:first-child{
 
 tr:nth-last-child(6) > :first-child{
   border-bottom-left-radius:5px
+}
+
+
+
+td.empty{
+  cursor:cell
+}
+td.slot{
+  border-style:inset solid;
+  border-color:black;
+  border-width:medium;
+  overflow: auto
+}
+td.slot .slotTime{
+  font-size: 0.9em
 }

@@ -30,7 +30,7 @@ function displayTimeTable(timeTable){
   buildTimeTable()
 }
 function buildTimeTable(){
-  let $table = $('#timeTable')
+  let $table = $('#timeTable').empty()
   let $rows = []
   let $tr = $('<tr><th id="hourDisplay"></th></tr>').appendTo($table)
   let dayNames = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi']
@@ -56,14 +56,36 @@ function buildTimeTable(){
         .appendTo($tr)
         .attr('rowspan',grad/5 | 0)
     }
-
     for(let d_=1;d_<=7;d_++){
       d = d_%7
+
+      let $td = $('<td class="empty">')
+
       if(! timeTable.days[d]?.validDay) continue
-      let $td = $('<td class="empty">').appendTo($tr)
-        .data('dayIndex',d%7)
+      timeTable.days[d].slots = timeTable.days[d].slots || []
+      d,t,timeTable.days[d].slots.forEach((item, i) => {
+        if(item.start == t){
+          let rowspan = (((item.end/100|0) - (item.start/100|0))*60 + item.end%100 - item.start%100)/5
+          $td = $(`<td class="slot"><span class="slotName">${item.name}</span><input type="color" class="slotColor" value="${item.color}"/><span class="addProgramItem"/><br><span class="slotTime">${formatTime(item.start)}-${formatTime(item.end)}</span></td>`)
+            .attr('rowspan',rowspan)
+            .css('background-color',item.color)
+            .data('slotIndex',i)
+          return false
+        }
+        if(item.start < t && item.end > t){
+          // skip cell because of rowspan
+          $td=null
+          return false
+        }
+      })
+      if($td){
+        $td.appendTo($tr)
+          .data('dayIndex',d%7)
+      }
     }
   }
+  $('.slotName').editable()
+  $('.addProgramItem').programItemSelector({program:window.program})
 }
 function formatTime(t){
   return `${t/1000|0||'0'}${t%1000/100|0}:${t%100/10|0||'0'}${t%100%10}`
@@ -88,19 +110,54 @@ function timeTableMouseUp(e){
       à <input type="time" name="end" value="${formatTime(end)}"/><br>
       <button onclick="window.close()">Annuler</button>
       <input type="submit"/></form>`)
-    console.log(result)
     window.timeTable.days[dayIndex].slots = window.timeTable.days[dayIndex].slots ||[]
     window.timeTable.days[dayIndex].slots.push({
       start:result.start.replace(':',''),
       end:result.end.replace(':',''),
-      name:'nouveau créneau'
+      name:'nouveau créneau',
+      color:'#cccccc'
     })
+    buildTimeTable()
   }
   creatingSlot = false
 }
 function timeTableMouseLeave(e){
   creatingSlot = false
 }
+function slotNameChange(){
+  let $td = $(this).parents('td')
+  let dayIndex=$td.data('dayIndex')
+  let slotIndex=$td.data('slotIndex')
+  window.timeTable.days[dayIndex].slots[slotIndex].name=this.innerText
+  buildTimeTable()
+}
+function colorChange(){
+  let $td = $(this).parents('td')
+  let dayIndex=$td.data('dayIndex')
+  let slotIndex=$td.data('slotIndex')
+  window.timeTable.days[dayIndex].slots[slotIndex].color=this.value
+  buildTimeTable()
+}
+
+function programItemSelected(i,item){
+  if(item){
+    let $td = $(this).parents('td')
+    let dayIndex=$td.data('dayIndex')
+    let slotIndex=$td.data('slotIndex')
+    Object.assign(window.timeTable.days[dayIndex].slots[slotIndex],{
+      name:item.name,
+      color:item.color,
+      programItemUuid:item.uuid,
+      programItemReference:item.reference,
+      programItemReferenceXPath:item.referenceXPath
+    })
+    buildTimeTable()
+    //$('#programmationName').val(item.name)
+    //$('#programmationColor').val(item.color)
+    //$(this).data('uuid',item.uuid).data('referenceXPath',item.referenceXPath)
+  }
+}
+
 $(function(){
   $('#timeTableName').editable()
     .on('change',timeTableNameChange)
@@ -113,6 +170,9 @@ $(function(){
     })
     .on('mousedown','td.empty',timeTableMouseDown)
     .on('mouseup','td.empty',timeTableMouseUp)
+    .on('change','.slotName',slotNameChange)
+    .on('programItemSelected','.addProgramItem',programItemSelected)
+    .on('change','input[type=color]',colorChange)
   $('#apply').click(()=>{
     window.closeWindow('a')
   })
@@ -120,7 +180,8 @@ $(function(){
     window.closeWindow(null)
   })
   options = window.getOptions()
-  if(options)
-    displayTimeTable(options)
+  window.program = options.program
+  if(options?.timeTable)
+    displayTimeTable(options.timeTable)
 
 })

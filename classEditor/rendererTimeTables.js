@@ -158,7 +158,7 @@ function openTimeTableClick(){
   let save = function(e,data){
     saveClass()
   }
-  window.launchTimeTableEditor(window.class_.timeTables[index],updateTimeTable,save)
+  window.launchTimeTableEditor({timeTable:window.class_.timeTables[index],program:window.class_.program},updateTimeTable,save)
 }
 $(function(){
   $('#addTimeTable').on('click',addTimeTableClick)

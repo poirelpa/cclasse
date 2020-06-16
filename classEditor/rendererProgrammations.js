@@ -201,7 +201,6 @@ function addSubjectClick(){
 
 function programItemSelected(i,item){
   if(item){
-    console.log(item)
     $('#programmationName').val(item.name)
     $('#programmationColor').val(item.color)
     $(this).data('uuid',item.uuid).data('referenceXPath',item.referenceXPath)
