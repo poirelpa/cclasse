@@ -113,7 +113,11 @@ function timeTablesEditModeChange(){
   let show = $('#timeTablesEditMode').get(0).checked
   $('span.ui-icon:not(.ui-icon-calculator)','#timeTables').css('display',show?'inline-block':'none')
   $('#timeTablesEdit').css('display',show?'block':'none')
-  $(':radio:not(:checked)').attr('disabled', !show);
+  $(':radio','#timeTables').css('display',show?'inline-block':'none');
+  $('.ui-icon-check','#timeTables').remove()
+  if(!show){
+    $(':radio:checked','#timeTables').after('<span class="ui-icon ui-icon-check">✓</span>')
+  }
 }
 
 function updateTimeTablesTableWidth(){
