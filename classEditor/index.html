@@ -13,16 +13,14 @@
   <body>
     <section id="class">
       <form>
-        <br>
-        <label for="className">Classe : </label>
-        <span id="className"></span>
-        <br>
-        <br>
+        <h1><label for="className">Classe : </label><span id="className"></span></h1>
+        <h2>Programmations</h2>
         <table id="programmations">
         </table>
         <br>
-        <h3><label for="programmationsEditMode">Mode édition des programmations</label>
-        <input type="checkbox" id="programmationsEditMode"/></h3>
+        <input type="checkbox" id="programmationsEditMode"/>
+        <label for="programmationsEditMode">Mode édition des programmations</label>
+        <br>
         <div id="programmationsEdit">
           <label for="classProgram">Programme</label>
           <select id="classProgram"></select>
@@ -67,17 +65,24 @@
           <input id="programmationColor" type="color" value="#ffffff"/>
           <a href="#" id="addProgrammation" class="ui-icon ui-icon-plus">Ajouter une matière</a>
         </div>
+        <h2>Emplois du temps</h2>
+        <table id="timeTables"></table>
+
+        <br>
+        <input type="checkbox" id="timeTablesEditMode"/>
+        <label for="timeTablesEditMode">Mode édition des emplois du temps</label>
+        <br>
+        <div id="timeTablesEdit">
+          <a href="#" id="addTimeTable">Ajouter un emploi du temps</a>
+        </div>
       </form>
-      <h3>Emplois du temps</h3>
-      <ul id="timeTablesList">
-      </ul>
-      <a href="#" id="addTimeTable">Ajouter un emploi du temps</a>
     </section>
     <script src="../node_modules/jquery-ui-dist/external/jquery/jquery.js"></script>
     <script src="../node_modules/jquery-ui-dist/jquery-ui.min.js"></script>
     <script src="../editable.js"></script>
     <script src="../programItemSelector.js"></script>
     <script src="./rendererProgrammations.js"></script>
+    <script src="./rendererTimeTables.js"></script>
     <script src="./renderer.js"></script>
     <script src="./rendererMenu.js"></script>
   </body>

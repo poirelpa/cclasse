@@ -21,33 +21,29 @@ section#class{
   text-align: center;
 }
 
-#programmations{
+table{
   border-collapse: separate;
   border-spacing: 0
 }
-#programmations td, #programmations th{
+td,th{
   border: solid thin #777;
   border-style: none none solid solid;
   position:relative;
-  padding:0 4px
-}
-#programmations th{
+  padding:0 4px;
   font-weight: normal;
-  min-width:35px
 }
-#programmations th.programmation,#programmations th.subject{
-  min-width:150px;
-  text-align: left;
-}
-#programmations .periodBreak{
-  border-left-width: medium
+table tr:first-child >:first-child { border-top-left-radius: 5px; }
+table tr:first-child >:last-child { border-top-right-radius: 5px; }
+table tr:last-child >:first-child { border-bottom-left-radius: 5px; }
+table tr:last-child >:last-child { border-bottom-right-radius: 5px; }
+table tr:first-child > * { border-top-style: solid; }
+table tr > :last-child { border-right-style: solid; }
+
+.ui-icon-grip-dotted-horizontal{
+  cursor:row-resize;
 }
 
-#programmations td.empty{
-  cursor:cell
-}
-
-#programmations .progression .draggable-left, #programmations .progression .draggable-right{
+.progression .draggable-left, .progression .draggable-right{
   cursor:col-resize;
 
   position:absolute;
@@ -57,24 +53,30 @@ section#class{
   width:10px;
   margin-top:-8px;
 }
-#programmations .progression .draggable-right{
+.progression .draggable-right{
   left:auto;
   background-position:0px -224px;
   right:0px;
   z-index: 100
 }
 
-#programmations .ui-icon-grip-dotted-horizontal{
-  cursor:row-resize;
+ th{
+  min-width:38px
+}
+#programmations th.programmation,#programmations th.subject{
+  min-width:150px;
+  text-align: left;
+}
+.periodBreak{
+  border-left-width: medium
 }
 
-#programmations tr:first-child >:first-child { border-top-left-radius: 5px; }
-#programmations tr:first-child >:last-child { border-top-right-radius: 5px; }
-#programmations tr:last-child >:first-child { border-bottom-left-radius: 5px; }
-#programmations tr:last-child >:last-child { border-bottom-right-radius: 5px; }
-#programmations tr:first-child > * { border-top-style: solid; }
-#programmations tr > :last-child { border-right-style: solid; }
+#programmations td.empty{
+  cursor:cell
+}
 
-#programmationsEdit{
+
+
+#programmationsEdit, #timeTablesEdit{
   margin-left:10px
 }

@@ -2,7 +2,7 @@
 
 function buildProgrammationsTable(){
   let class_ = window.class_
-  let $header = $('<tr><th colspan="2">Programmations</th></tr>')
+  let $header = $('<tr><th colspan="2"></th></tr>')
   let $programmations = $('#programmations').empty()
     .append($header)
 
@@ -137,6 +137,7 @@ function buildProgrammationsTable(){
     zIndex:100
   })
   programmationsEditModeChange()
+  updateTimeTablesTableWidth()
 }
 
 function loadPrograms(){
@@ -237,16 +238,19 @@ function programmationNameChange(e){
   let progIndex = $(this).parents('tr').data('progIndex')
   let subjectIndex = $(this).parents('tr').data('subjectIndex')
   window.class_.programmations[subjectIndex].programmations[progIndex].name = this.innerText
+  updateTimeTablesTableWidth()
 }
 function subjectNameChange(){
     let subjectIndex = $(this).parents('tr').data('subjectIndex')
     class_.programmations[subjectIndex].name = this.innerText
+    updateTimeTablesTableWidth()
 }
 function progressionNameChange(){
   let progIndex = $(this).parents('tr').data('progIndex')
   let subjectIndex = $(this).parents('tr').data('subjectIndex')
   let progressionIndex = $(this).data('progressionIndex')
   window.class_.programmations[subjectIndex].programmations[progIndex].progressions[progressionIndex].name = this.innerText
+  updateTimeTablesTableWidth()
 }
 
 function programmationsEditModeChange(){
@@ -458,3 +462,22 @@ function programmationDragStop(){
   }
   return true
 }
+
+$(function(){
+
+  $('#addPeriod').on('click',addPeriodClick)
+  $('#addProgrammation').on('click',addSubjectClick)
+  $('#selectProgramItem').programItemSelector(getProgramItemSelectorOptions).on('programItemSelected',programItemSelected)
+  $('#classProgram').on('change',classProgramChange)
+  $('#programmationsEditMode').on('change',programmationsEditModeChange)
+  $('#programmations')
+    .on('click','.subject .addProgrammation',addProgrammationClick)
+    .on('change','.programmationName',programmationNameChange)
+    .on('change','.subjectName',subjectNameChange)
+    .on('change','.progression',progressionNameChange)
+    .on('click','.programmation .ui-icon-trash',deleteProgClick)
+    .on('click','.subject .ui-icon-trash',deleteSubjectClick)
+    .on('click','.progression .ui-icon-trash',deleteProgressionClick)
+    .on('click','td.empty',emptyCellClicked)
+    .on('click','.deleteWeek',deleteWeekClicked)
+})
