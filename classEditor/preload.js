@@ -47,3 +47,7 @@ window.saveClassFile = function(class_, filePath){
 window.getProgramsFilesList = function(){
   return fs.readdir(programsPath)
 }
+
+window.launchTimeTableEditor = function(timeTable){
+  return ipcRenderer.sendSync("launchTimeTableEditor",timeTable)
+}

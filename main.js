@@ -6,6 +6,7 @@ const {createWindow} = require('./classEditor/main.js')
 require('./prompt/main.js')
 require('./programBrowser/main.js')
 require('./programEditor/main.js')
+require('./timeTableEditor/main.js')
 
 
 app.allowRendererProcessReuse = false
