@@ -21,45 +21,6 @@ section#class{
   text-align: center;
 }
 
-table{
-  border-collapse: separate;
-  border-spacing: 0
-}
-td,th{
-  border: solid thin #777;
-  border-style: none none solid solid;
-  position:relative;
-  padding:0 4px;
-  font-weight: normal;
-}
-table tr:first-child >:first-child { border-top-left-radius: 5px; }
-table tr:first-child >:last-child { border-top-right-radius: 5px; }
-table tr:last-child >:first-child { border-bottom-left-radius: 5px; }
-table tr:last-child >:last-child { border-bottom-right-radius: 5px; }
-table tr:first-child > * { border-top-style: solid; }
-table tr > :last-child { border-right-style: solid; }
-
-.ui-icon-grip-dotted-horizontal{
-  cursor:row-resize;
-}
-
-.progression .draggable-left, .progression .draggable-right{
-  cursor:col-resize;
-
-  position:absolute;
-  left:0px;
-  top:50%;
-  background-position:-5px -224px;
-  width:10px;
-  margin-top:-8px;
-}
-.progression .draggable-right{
-  left:auto;
-  background-position:0px -224px;
-  right:0px;
-  z-index: 100
-}
-
  th{
   min-width:38px
 }

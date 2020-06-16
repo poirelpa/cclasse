@@ -11,9 +11,24 @@
     <title>CClasse - Emploi du temps</title>
   </head>
   <body>
-    <a href="#" id="apply">Valider</a>
+    <section>
+      <form>
+        <h1><span id="timeTableName"></span></h1>
+        <table id="timeTable">
+        </table>
+        <input type="checkbox" id="timeTableEditMode"/>
+        <label for="timeTableEditMode">Mode édition de l'emploi du temps</label>
+        <br>
+        <div id="timeTableEdit">
+        </div>
+
+        <a href="#" id="cancel">Annuler</a>
+        <a href="#" id="apply">Valider</a>
+      </form>
+    </section>
     <script src="../node_modules/jquery-ui-dist/external/jquery/jquery.js"></script>
     <script src="../node_modules/jquery-ui-dist/jquery-ui.min.js"></script>
     <script src="./renderer.js"></script>
+    <script src="../editable.js"></script>
   </body>
 </html>

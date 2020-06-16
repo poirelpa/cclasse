@@ -92,5 +92,7 @@ $(function(){
         var c = JSON.parse(r)
         c.filePath = path
         displayClass(c)
+
+        console.log(window.launchTimeTableEditor(window.class_.timeTables[0]))
     })
 })

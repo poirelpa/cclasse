@@ -10,7 +10,6 @@ function launchProgramBrowser(window,options,callback){
     height: 600,
     parent:options.select?window:null,
     modal:!!options.select,
-    alwaysOnTop : true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       enableRemoteModule:true
