@@ -1,5 +1,6 @@
 (function($){
   $.fn.editable = function(){
+    if(this.next().hasClass('ui-icon-pencil')) return
     $('<span class="ui-icon ui-icon-pencil">')
       .insertAfter(this)
       .on('click',function(){
