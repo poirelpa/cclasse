@@ -46,7 +46,6 @@ function buildTimeTable(){
     if(t%100==60)t+=40
     let $tr = $('<tr></tr>').appendTo($table)
       .data('time',t)
-      .attr('title',formatTime(t))
       .addClass('min'+t%100)
 
     let grad = 30
@@ -60,6 +59,7 @@ function buildTimeTable(){
       d = d_%7
 
       let $td = $('<td class="empty">')
+        .attr('title',formatTime(t))
 
       if(! timeTable.days[d]?.validDay) continue
       timeTable.days[d].slots = timeTable.days[d].slots || []
