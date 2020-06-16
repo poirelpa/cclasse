@@ -148,9 +148,10 @@ function applyTimeTableClick(){
     dayDate.setDate(dayDate.getDate()+1)
   }while(dayDate.getDay()>0)
 }
+
 function openTimeTableClick(){
-  let uuid = $(this).parents('tr').data('timeTableUuid')
-  console.log(window.launchTimeTableEditor(uuid))
+  let index = $(this).parents('tr').data('timeTableIndex')
+  console.log(window.launchTimeTableEditor(window.class_.timeTables[index]))
 }
 $(function(){
   $('#addTimeTable').on('click',addTimeTableClick)
