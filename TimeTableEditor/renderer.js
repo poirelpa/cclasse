@@ -3,6 +3,11 @@ const template = [
   {
     role:'fileMenu',
     submenu:[
+      {
+        label:'&Enregistrer',
+        click:window.saveClass,
+        accelerator:'CommandOrControl+S'
+      },
     ]
   },
   {
@@ -61,36 +66,40 @@ function buildTimeTable(){
   }
 }
 function formatTime(t){
-  return `${t/100|0}h${t%100/10|0||'0'}${t%100%10}`
+  return `${t/1000|0||'0'}${t%1000/100|0}:${t%100/10|0||'0'}${t%100%10}`
 }
 function timeTableNameChange(){
   window.timeTable.name = this.innerText
 }
 
-var drawing = false
+var creatingSlot = false
+var startTime
 function timeTableMouseDown(e){
-  let $this = $(this)
-  $this.addClass('drawing')
-  drawing = true
-  console.log('down',$this.parent().data('time'))
+  creatingSlot = true
+  startTime = $(this).parent().data('time')
   return false
 }
 function timeTableMouseUp(e){
-  drawing = false
-  let $this = $(this)
-  console.log('up',$this.parent().data('time'))
+  if(creatingSlot){
+    let end = $(this).parent().data('time')
+    let dayIndex = $(this).data('dayIndex')
+    if(end == startTime) end = startTime + 100
+    let result = window.promptForm(`<form width="500px">De <input type="time" name="start" value="${formatTime(startTime)}"/><br>
+      à <input type="time" name="end" value="${formatTime(end)}"/><br>
+      <button onclick="window.close()">Annuler</button>
+      <input type="submit"/></form>`)
+    console.log(result)
+    window.timeTable.days[dayIndex].slots = window.timeTable.days[dayIndex].slots ||[]
+    window.timeTable.days[dayIndex].slots.push({
+      start:result.start.replace(':',''),
+      end:result.end.replace(':',''),
+      name:'nouveau créneau'
+    })
+  }
+  creatingSlot = false
 }
 function timeTableMouseLeave(e){
-  console.log('z')
-  //if (this.tagName != 'TABLE') return
-  drawing = false
-  $('td.drawing').removeClass('drawing')
-}
-function timeTableMouseEnter(e){
-  console.log('a')
-  if(!drawing) return
-  let $this = $(this)
-  $this.addClass('drawing')
+  creatingSlot = false
 }
 $(function(){
   $('#timeTableName').editable()
@@ -104,8 +113,6 @@ $(function(){
     })
     .on('mousedown','td.empty',timeTableMouseDown)
     .on('mouseup','td.empty',timeTableMouseUp)
-    .on('mouseenter','td.empty',timeTableMouseEnter)
-    .on('mouseleave',timeTableMouseLeave)
   $('#apply').click(()=>{
     window.closeWindow('a')
   })

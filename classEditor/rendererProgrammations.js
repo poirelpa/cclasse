@@ -9,6 +9,7 @@ function buildProgrammationsTable(){
   let $programmationRows = []
 
   let row = 0
+  class_.programmations = class_.programmations || []
   class_.programmations.forEach((subject, i) => {
     let currentRow = row
     if(subject.programmations?.length>1 || subject.programmations?.[0]?.name){

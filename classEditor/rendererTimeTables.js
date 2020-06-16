@@ -7,7 +7,8 @@ function buildTimeTablesTable(){
 
   let $timeTableRows = []
 
-  class_.timeTables.forEach((timeTable, row) => {
+    class_.timeTables = class_.timeTables || []
+    class_.timeTables.forEach((timeTable, row) => {
     let currentRow = row
     $timeTableRows[row]=$(`<tr></tr>`)
       .data('timeTableUuid',timeTable.uuid)
@@ -151,7 +152,13 @@ function applyTimeTableClick(){
 
 function openTimeTableClick(){
   let index = $(this).parents('tr').data('timeTableIndex')
-  console.log(window.launchTimeTableEditor(window.class_.timeTables[index]))
+  let updateTimeTable = function(e,data){
+    window.class_.timeTables[0]=data
+  }
+  let save = function(e,data){
+    saveClass()
+  }
+  window.launchTimeTableEditor(window.class_.timeTables[index],updateTimeTable,save)
 }
 $(function(){
   $('#addTimeTable').on('click',addTimeTableClick)

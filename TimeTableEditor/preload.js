@@ -10,3 +10,8 @@ window.closeWindow = function(data) {
 window.getOptions=function() {
   return ipcRenderer.sendSync("openTimeTableEditor", "")
 }
+
+window.saveClass = function(){
+  ipcRenderer.send("updateTimeTable", window.timeTable)
+  ipcRenderer.send("saveClass", window.timeTable)
+}

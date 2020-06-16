@@ -3,6 +3,7 @@ const path = require('path')
 
 var options
 var returnValue
+var parentWebContents
 
 function launch(window,options,callback){
 
@@ -30,21 +31,30 @@ function launch(window,options,callback){
 }
 
 
-ipcMain.on("openTimeTableEditor", (event, data) => {
+ipcMain.on('openTimeTableEditor', (event, data) => {
     event.returnValue = options
 })
 
 // Called by the dialog box when closed
 
-ipcMain.on("closeTimeTableEditor", (event, data) => {
+ipcMain.on('closeTimeTableEditor', (event, data) => {
   returnValue = data
 })
 
 // Called by the application to open the prompt dialog
-ipcMain.on("launchTimeTableEditor",  (event, data) => {
+ipcMain.on('launchTimeTableEditor',  (event, data) => {
   options = data || {}
+  parentWebContents = event.sender
   launch(BrowserWindow.fromWebContents(event.sender),options,
   function() {
     event.returnValue = returnValue
   })
+})
+ipcMain.on('updateTimeTable',  (event, data) => {
+  if(parentWebContents)
+    parentWebContents.send('updateTimeTable',data)
+})
+ipcMain.on('saveClass',  (event, data) => {
+  if(parentWebContents)
+    parentWebContents.send('saveClass',data)
 })

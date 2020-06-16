@@ -48,6 +48,9 @@ window.getProgramsFilesList = function(){
   return fs.readdir(programsPath)
 }
 
-window.launchTimeTableEditor = function(timeTable){
-  return ipcRenderer.sendSync("launchTimeTableEditor",timeTable)
+window.launchTimeTableEditor = function(timeTable, callbackUpdate, callbackSave){
+  ipcRenderer.send("launchTimeTableEditor",timeTable)
+
+  ipcRenderer.on('updateTimeTable', callbackUpdate)
+  ipcRenderer.on('saveClass',callbackSave)
 }

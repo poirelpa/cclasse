@@ -24,7 +24,3 @@ tr:last-child > td:first-child{
 tr:nth-last-child(6) > :first-child{
   border-bottom-left-radius:5px
 }
-
-.drawing{
-  background-color: red
-}
