@@ -61,17 +61,50 @@ function timeTableNameChange(){
 }
 
 function timeTableDragStop(){
-  console.log(this.position().top)
-  throw "not implemented"
+  let $tr = this.parents('tr')
+  let top = this.position().top+5
+  let oldIndex = $tr.data('timeTableIndex')
+
+  do{
+    if(top <0){
+      $tr = $tr.prev()
+      top += $tr.outerHeight()
+    }else if(top >$tr.outerHeight()){
+      top -= $tr.outerHeight()
+      $tr = $tr.next()
+    }else {
+      let newIndex = $tr.data('timeTableIndex')
+      if(newIndex == oldIndex) return true
+
+      if(top > $tr.outerHeight() /2)
+        newIndex ++
+
+      if(newIndex > oldIndex)
+        newIndex --
+      window.class_.timeTables.splice(newIndex, 0,  window.class_.timeTables.splice(oldIndex, 1)[0])
+      buildTimeTablesTable()
+      return false
+    }
+  }while($tr.length)
+
   return true
 }
 
 function addTimeTableClick(){
   window.class_.timeTables = window.class_.timeTables || []
-  window.class_.timeTables.push({
+  let newTimeTable = {
     name:'nouvel emploi du temps',
-    uuid:uuid()
-  })
+    uuid:uuid(),
+    days:[]
+  }
+  getValidDays().forEach((valid, day) => {
+    newTimeTable.days[day]=valid ? defautDay = {
+      validDay:true,
+      timeTableUuid:newTimeTable.uuid
+    } : {}
+  });
+  window.class_.timeTables.push(newTimeTable)
+
   buildTimeTablesTable()
   return false
 }
@@ -97,8 +130,19 @@ function deleteTimeTableClick(){
 }
 function applyTimeTableClick(){
   let dayKey = $(this).parents('td').data('dayKey')
-  let uuid = $(this).parents('tr').data('timeTableUuid')
-  window.class_.days[dayKey].timeTableUuid=uuid
+  let index = $(this).parents('tr').data('timeTableIndex')
+  let dayDate = $.datepicker.parseDate('yymmdd',dayKey)
+
+  if(window.class_.days[dayKey].timeTableUuid==window.class_.timeTables[index].uuid) return
+
+  do{
+    if(window.class_.days.hasOwnProperty(dayKey)){
+      window.class_.days[dayKey].timeTableUuid=window.class_.timeTables[index].uuid
+      window.class_.days[dayKey].timeTable=window.class_.timeTables[index].days?.[dayDate.getDay()]
+    }
+    dayKey++
+    dayDate.setDate(dayDate.getDate()+1)
+  }while(dayDate.getDay()>0)
 }
 function openTimeTableClick(){
   let uuid = $(this).parents('tr').data('timeTableUuid')

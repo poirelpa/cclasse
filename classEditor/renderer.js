@@ -49,15 +49,35 @@ function updateClass(){
 
   Object.assign(window.class_,{
     name:$('#className').text(),
-    program:$('#classProgram').val()
+    program:$('#classProgram').val(),
+    validDays:getValidDays()
   })
   return window.class_
+}
+
+function getValidDays(){
+  return [
+    $('#periodSunday').is(':checked'),
+    $('#periodMonday').is(':checked'),
+    $('#periodTuesday').is(':checked'),
+    $('#periodWednesday').is(':checked'),
+    $('#periodThursday').is(':checked'),
+    $('#periodFriday').is(':checked'),
+    $('#periodSaturday').is(':checked')]
 }
 
 function displayClass(class_){
   console.log(class_)
   $('#className').text(class_.name).editable()
   $('#classProgram').val(class_.program)
+  class_.validDays = class_.validDays || [0,1,1,0,1,1,0]
+  $('#periodSunday').get(0).checked=class_.validDays[0]
+  $('#periodMonday').get(0).checked=class_.validDays[1]
+  $('#periodTuesday').get(0).checked=class_.validDays[2]
+  $('#periodWednesday').get(0).checked=class_.validDays[3]
+  $('#periodThursday').get(0).checked=class_.validDays[4]
+  $('#periodFriday').get(0).checked=class_.validDays[5]
+  $('#periodSaturday').get(0).checked=class_.validDays[6]
   window.class_ = class_
   $('#class').show()
   buildProgrammationsTable()

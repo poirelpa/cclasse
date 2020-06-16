@@ -155,14 +155,7 @@ function loadPrograms(){
 }
 
 function addPeriodClick(){
-  let validDays = [
-    $('#periodSunday').is(':checked'),
-    $('#periodMonday').is(':checked'),
-    $('#periodTuesday').is(':checked'),
-    $('#periodWednesday').is(':checked'),
-    $('#periodThursday').is(':checked'),
-    $('#periodFriday').is(':checked'),
-    $('#periodSaturday').is(':checked')]
+  let validDays = getValidDays()
 
     let periodStart = $('#periodStart').get(0).valueAsDate
     let periodEnd = $('#periodEnd').get(0).valueAsDate
