@@ -35,9 +35,45 @@ function buildTimeTable(){
   let $tr = $('<tr><th id="hourDisplay"></th></tr>').appendTo($table)
   let dayNames = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi']
   let d
+
+  var slotColumn=[]
+  var slotOverlapsCount=[]
   for(let d_=1;d_<=7;d_++){
     d = d_%7
     if(! timeTable.days[d]?.validDay) continue
+
+
+
+    // commpute for each slot its "column index" in case of overlapping
+    timeTable.days[d].slots = timeTable.days[d].slots || []
+    // step 1 : order slots to optimize overlapping
+    // todo
+    // step 2 : liste for each slot the overlapping slots
+
+    slotColumn[d] = []
+    slotOverlapsCount[d] = []
+    let overlap=[]
+    for(let i = 0; i<timeTable.days[d].slots.length;i++){
+      let slot1 = timeTable.days[d].slots[i]
+      overlap[i]=[]
+      for(let j = 0; j<timeTable.days[d].slots.length;j++){
+        if(i==j) continue
+        let slot2 = timeTable.days[d].slots[j]
+        if(!(slot1.end <= slot2.start) && !(slot2.end <= slot1.start)){
+          overlap[i].push(j)
+        }
+      }
+      slotColumn[d][i]=0
+      let overlappingSlotCols = overlap[i].map((j,item)=>slotColumn[d][j])
+      while(overlappingSlotCols.includes(slotColumn[d][i]))
+        slotColumn[d][i]++
+
+    }
+    for(let i = 0; i<timeTable.days[d].slots.length;i++){
+      slotOverlapsCount[d][i]=Math.max(slotColumn[d][i],...overlap[i].map((j,item)=>slotColumn[d][j]))+1
+    }
+
+
     let $td = $('<th class="day">').appendTo($tr)
       .data('dayIndex',d%7)
       .text(dayNames[d%7])
@@ -56,16 +92,21 @@ function buildTimeTable(){
         .appendTo($tr)
         .attr('rowspan',grad/5 | 0)
     }
+
+
     for(let d_=1;d_<=7;d_++){
       d = d_%7
 
       if(! timeTable.days[d]?.validDay) continue
 
+      let $columns = []
+      let columnsCount = 0
+
       let $td = $('<td><div class="slotContainer"></div></td>')
         .appendTo($tr)
         .data('dayIndex',d%7)
 
-      timeTable.days[d].slots = timeTable.days[d].slots || []
+
       d,t,timeTable.days[d].slots.forEach((item, i) => {
         if(item.end == t){
 
@@ -75,17 +116,26 @@ function buildTimeTable(){
             .data('slotIndex',i)
             .data('rowspan',rowspan)
             .data('dayIndex',d%7)
-            .appendTo($('.slotContainer',$td))
-            .outerHeight(rowspan * 5+1)
-          $slot.attr('title','')
-        } else if(item.start < t && item.end > t){
-          $('<div class="coveredByASlot"></div>')
-            .appendTo($('.slotContainer',$td))
+            //.appendTo($('.slotContainer',$td))
+            .outerHeight(rowspan * 5)
+            .attr('title','')
+
+          $columns[slotColumn[d][i]]=$slot
+        }
+        if(item.start < t && item.end >= t){
+          columnsCount = slotOverlapsCount[d][i]
         }
       })
-      /*$('<div class="emptySlot"></div>')
-        .attr('title',formatTime(t))
-        .appendTo($('.slotContainer',$td))*/
+      for(let i = 0;i<columnsCount;i++){
+        let $slot=$columns[i]
+        if($slot){
+          $slot.appendTo($('.slotContainer',$td))
+        } else{
+           $('<div class="coveredByASlot"></div>')
+            .appendTo($('.slotContainer',$td))
+        }
+      }
+
     }
   }
   $('.slotName').editable()
