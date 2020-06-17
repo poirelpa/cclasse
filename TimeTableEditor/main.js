@@ -23,6 +23,9 @@ function launch(window,options,callback){
       window_ = null
       callback();
   })
+  //https://github.com/electron/electron/issues/10616
+  window_.on('close', e => window.setAlwaysOnTop(true))
+  window_.on('closed', e => window.setAlwaysOnTop(false))
   // and load the index.html of the app.
   window_.loadFile(path.join(__dirname, 'index.html'))
 

@@ -17,7 +17,9 @@ window.prompt = function(title,msg,val){
 }
 
 window.promptForm = function(form){
-  let data = ipcRenderer.sendSync("prompt", {form:form}) || []
+  let data = ipcRenderer.sendSync("prompt", {form:form})
+
+  if(!data?.length) return
   let result = {}
   data.forEach((item, i) => {
     result[item.name] = item.value

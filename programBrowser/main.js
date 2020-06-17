@@ -22,6 +22,9 @@ function launchProgramBrowser(window,options,callback){
       programBrowserWindow = null
       callback();
   })
+  //https://github.com/electron/electron/issues/10616
+  programBrowserWindow.on('close', e => window.setAlwaysOnTop(true))
+  programBrowserWindow.on('closed', e => window.setAlwaysOnTop(false))
   // and load the index.html of the app.
   programBrowserWindow.loadFile(path.join(__dirname, 'index.html'))
 

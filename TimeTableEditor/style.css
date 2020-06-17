@@ -14,7 +14,8 @@ tr.min25 > *, tr.min0 > th{
   border-bottom: thin solid #ccc;
 }
 th.day,td.slot{
-  width:250px
+  width:500px;
+  min-width:100px
 }
 
 tr:last-child > td:first-child{
@@ -27,15 +28,40 @@ tr:nth-last-child(6) > :first-child{
 
 
 
-td.empty{
-  cursor:cell
-}
-td.slot{
+.slot{
   border-style:inset solid;
   border-color:black;
-  border-width:medium;
-  overflow: auto
+  border-width:thin;
+  overflow: auto;
+  flex:1000;
+  min-height: 12px;
+  cursor:default;
+  padding:3px;
+  border-radius: 3px;
+  height:500px
 }
-td.slot .slotTime{
-  font-size: 0.9em
+
+.coveredByASlot{
+  flex:1000
+}
+.slot .slotTime{
+  font-size: 0.8em
+}
+.slotContainer{
+  display:flex;
+  position:absolute;
+  bottom: 5px;
+  width:100%;
+  align-items:flex-end;
+}
+.editMode .slotContainer{
+  width:90%;
+}
+
+td{
+  position:relative;
+  padding:0;
+}
+td.editMode{
+  cursor:cell
 }
