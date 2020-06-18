@@ -29,11 +29,11 @@ function displayTimeTable(timeTable){
   $('#timeTableName').text(timeTable.name)
   buildTimeTable()
 }
+var dayNames = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi']
 function buildTimeTable(){
   let $table = $('#timeTable').empty()
   let $rows = []
   let $tr = $('<tr><th id="hourDisplay"></th></tr>').appendTo($table)
-  let dayNames = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi']
   let d
 
   var slotColumn=[]
@@ -111,7 +111,7 @@ function buildTimeTable(){
         if(item.end == t){
 
           let rowspan = (((item.end/100|0) - (item.start/100|0))*60 + item.end%100 - item.start%100)/5
-          let $slot = $(`<div class="slot"><span class="slotName">${item.name}</span><input type="color" class="slotColor" value="${item.color}"/><span class="addProgramItem"/><span class="ui-icon ui-icon-trash deleteSlot"/><br><span class="slotTime">${formatTime(item.start)}-${formatTime(item.end)}</span><span class="ui-icon ui-icon-clock changeSlotTime"/></div>`)
+          let $slot = $(`<div class="slot"><span class="slotName">${item.name}</span><input type="color" class="slotColor" value="${item.color}"/><span class="addProgramItem"/><span class="ui-icon ui-icon-trash deleteSlot"/><br><span class="slotTime">${formatTime(item.start)}-${formatTime(item.end)}</span><span class="ui-icon ui-icon-clock changeSlotTime"/><span class="ui-icon ui-icon-copy copySlot"/></div>`)
             .css('background-color',item.color)
             .data('slotIndex',i)
             .data('rowspan',rowspan)
@@ -167,10 +167,10 @@ function timeTableMouseUp(e){
       startTime = toto
     }
     if(end - startTime <= 10) end = startTime + 100
-    let result = promptTime(startTime,end)
+    let result = promptTime(dayIndex,startTime,end)
     if(!result) return false
-    window.timeTable.days[dayIndex].slots = window.timeTable.days[dayIndex].slots ||[]
-    window.timeTable.days[dayIndex].slots.push({
+    window.timeTable.days[result.day].slots = window.timeTable.days[dayIndex].slots ||[]
+    window.timeTable.days[result.day].slots.push({
       start:result.start,
       end:result.end,
       name:'nouveau créneau',
@@ -226,17 +226,36 @@ function changeSlotTimeClick(){
   let dayIndex=$slot.data('dayIndex')
   let slotIndex=$slot.data('slotIndex')
   let slot = window.timeTable.days[dayIndex].slots[slotIndex]
-  let result = promptTime(slot.start,slot.end)
+  let result = promptTime(dayIndex,slot.start,slot.end)
   if(!result) return false
   slot.start = result.start
   slot.end = result.end
+  if(result.day!=dayIndex) {
+    window.timeTable.days[dayIndex].slots.splice(slotIndex,1)
+    window.timeTable.days[result.day].slots.push(slot)
+  }
   buildTimeTable()
   return false
 }
 
-function promptTime(start,end){
-  let result = window.promptForm(`<form>De <input type="time" name="start" step="300" value="${formatTime(start)}"/>
-    à <input type="time" name="end" value="${formatTime(end)}"/><br><br>
+function copySlotClick(){
+  let $slot = $(this).parents('.slot')
+  let dayIndex=$slot.data('dayIndex')
+  let slotIndex=$slot.data('slotIndex')
+  let slot = Object.assign({},window.timeTable.days[dayIndex].slots[slotIndex])
+  let result = promptTime(dayIndex,slot.start,slot.end)
+  if(!result) return false
+  slot.start = result.start
+  slot.end = result.end
+  window.timeTable.days[result.day].slots.push(slot)
+  buildTimeTable()
+  return false
+}
+
+function promptTime(day,start,end){
+  let select = '<select name="day">'+window.timeTable.days.map((d,i)=>d.validDay ? `<option value="${i}"${i==day ? ' selected':''}>${dayNames[i]}</option>` : '').join('')+'</select>'
+  let result = window.promptForm(`<form>${select}<br><br>De <input type="time" name="start" step="300" value="${formatTime(start)}"/>
+    à <input type="time" name="end" step="300" value="${formatTime(end)}"/><br><br>
     <button onclick="window.close()">Annuler</button>&nbsp;
     <input type="submit"/></form><style>form{width:200px;}</style>`)
   if(result){
@@ -272,6 +291,7 @@ $(function(){
     .on('change','input[type=color]',colorChange)
     .on('click','.deleteSlot',deleteSlotClick)
     .on('click','.changeSlotTime',changeSlotTimeClick)
+    .on('click','.copySlot',copySlotClick)
   $('#apply').click(()=>{
     window.updateTimeTable()
     window.close()
