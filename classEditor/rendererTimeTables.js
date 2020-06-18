@@ -14,7 +14,7 @@ function buildTimeTablesTable(){
       .data('timeTableUuid',timeTable.uuid)
       .data('timeTableIndex',row)
       .appendTo($timeTables).append(
-        $(`<th class="timeTable"><span class="ui-icon ui-icon-grip-dotted-horizontal"/><span class="timeTableName">${timeTable.name}</span><span class="openTimeTable ui-icon ui-icon-calculator"/><span class="ui-icon ui-icon-trash"/></th>`)
+        $(`<th class="timeTable"><span class="ui-icon ui-icon-grip-dotted-horizontal"/><span class="timeTableName">${timeTable.name}</span><span class="openTimeTable ui-icon ui-icon-calculator"/><span class="ui-icon ui-icon-copy copyTimeTable"/><span class="ui-icon ui-icon-trash deleteTimeTable"/></th>`)
       )
   })
   let prevDay
@@ -149,6 +149,16 @@ function applyTimeTableClick(){
     dayDate.setDate(dayDate.getDate()+1)
   }while(dayDate.getDay()>0)
 }
+function copyTimeTableClick(){
+  let index = $(this).parents('tr').data('timeTableIndex')
+  let newTimeTable = JSON.parse(JSON.stringify(window.class_.timeTables[index]))
+  newTimeTable.copyOf = newTimeTable.uuid
+  newTimeTable.uuid = uuid()
+  newTimeTable.name = 'nouvel emploi du temps'
+  window.class_.timeTables.push(newTimeTable)
+  buildTimeTablesTable()
+  return false
+}
 
 function openTimeTableClick(){
   let index = $(this).parents('tr').data('timeTableIndex')
@@ -163,7 +173,8 @@ function openTimeTableClick(){
 $(function(){
   $('#addTimeTable').on('click',addTimeTableClick)
   $('#timeTablesEditMode').on('change',timeTablesEditModeChange)
-  $('#timeTables').on('click','.timeTable .ui-icon-trash',deleteTimeTableClick)
+  $('#timeTables').on('click','.deleteTimeTable',deleteTimeTableClick)
   $('#timeTables').on('click','.applyTimeTable',applyTimeTableClick)
   $('#timeTables').on('click','.openTimeTable',openTimeTableClick)
+  $('#timeTables').on('click','.copyTimeTable',copyTimeTableClick)
 })

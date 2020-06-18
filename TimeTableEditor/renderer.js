@@ -292,6 +292,11 @@ $(function(){
     .on('click','.deleteSlot',deleteSlotClick)
     .on('click','.changeSlotTime',changeSlotTimeClick)
     .on('click','.copySlot',copySlotClick)
+  window.onbeforeunload =()=>{
+    if(confirm('Garder les modifications en mémoire ?')){
+      window.updateTimeTable()
+    }
+  }
   $('#apply').click(()=>{
     window.updateTimeTable()
     window.close()
