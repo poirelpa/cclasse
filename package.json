@@ -17,7 +17,7 @@
   "author": "poirelpa",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^9.0.3"
+    "electron": "^9.3.1"
   },
   "dependencies": {
     "jquery-ui-dist": "^1.12.1",
